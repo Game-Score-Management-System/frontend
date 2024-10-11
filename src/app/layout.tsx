@@ -1,19 +1,9 @@
-import type { Metadata } from "next";
-import localFont from "next/font/local";
-import { NextUIProvider } from "@nextui-org/react";
-
 import "./globals.css";
+import type { Metadata } from "next";
+import { NextUIProvider } from "@nextui-org/react";
+import { Montserrat } from "next/font/google"
 
-const geistSans = localFont({
-  src: "./fonts/GeistVF.woff",
-  variable: "--font-geist-sans",
-  weight: "100 900",
-});
-const geistMono = localFont({
-  src: "./fonts/GeistMonoVF.woff",
-  variable: "--font-geist-mono",
-  weight: "100 900",
-});
+const montserrat = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
   title: "App Score",
@@ -28,7 +18,7 @@ export default function RootLayout({
   return (
     <html lang="es">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        className={`${montserrat.className} antialiased  dark text-foreground bg-background`}
       >
         <NextUIProvider>
           {children}
