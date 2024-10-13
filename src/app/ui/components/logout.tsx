@@ -23,7 +23,11 @@ export default function Logout() {
             src: "https://robohash.org/random2",
           }}
           className="transition-transform"
-          description="@tonyreichert"
+          description={
+            <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
+              @tonyreichert
+            </p>
+          }
           name="Juan Carlos Romero"
         />
       </DropdownTrigger>
