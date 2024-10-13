@@ -25,6 +25,7 @@ export default function useForm<T>(initialValues: T, validationSchema: AnySchema
     try {
       await validationSchema.validateAt(name, { [name]: value });
       setErrors((prevErrors) => ({ ...prevErrors, [name]: "" }));
+      setValidForm(true);
     } catch (err) {
       if (err instanceof ValidationError) {
         setErrors((prevErrors) => ({

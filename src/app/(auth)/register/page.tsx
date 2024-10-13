@@ -1,20 +1,31 @@
 'use client';
-
-import { UserEditIcon } from "@icons/UserEditIcon";
-import { UserScan } from "@icons/UserScan";
-import { EyeFilledIcon } from "@icons/EyeFilledIcon";
-import { EyeSlashFilledIcon } from "@icons/EyeSlashFilledIcon";
-import { MailIcon } from "@icons/MailIcon";
-import { PasswordIcon } from "@icons/PasswordIcon";
 import { Input, Button } from "@nextui-org/react";
 import { RegisterFormValidationSchema } from "@/app/ui/schemas/registerForm.schema";
 import { useState } from "react";
 import useForm from "@/app/ui/hooks/useForm";
+import { useRouter } from 'next/navigation';
+
+import toast from "react-hot-toast";
+import { EnvelopeIcon, EyeIcon, EyeSlashIcon, LockClosedIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+
 
 export default function Register() {
+  const router = useRouter();
 
   const onRegister = async () => {
-    console.log('Registrando usuario', values);
+
+    const simulaEspera = async () => {
+      return await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      });
+    }
+
+    await toast.promise(
+      simulaEspera(),
+      { loading: 'Registrando...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
+    );
+
+    router.push('/dashboard');
   }
 
   const { values, errors, validForm, handleSubmit, handleChange } = useForm(
@@ -57,7 +68,7 @@ export default function Register() {
           placeholder="John"
           labelPlacement="outside"
           classNames={{ inputWrapper: inputWrapperClasses }}
-          startContent={<UserScan className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<UserCircleIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
           value={values.name}
           onChange={handleChange}
           isInvalid={!!errors.name}
@@ -70,7 +81,7 @@ export default function Register() {
           placeholder="Doe"
           labelPlacement="outside"
           classNames={{ inputWrapper: inputWrapperClasses }}
-          startContent={<UserEditIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<UserCircleIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
           value={values.lastName}
           onChange={handleChange}
           isInvalid={!!errors.lastName}
@@ -84,7 +95,7 @@ export default function Register() {
           labelPlacement="outside"
           className="md:col-span-2"
           classNames={{ inputWrapper: inputWrapperClasses }}
-          startContent={<MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<EnvelopeIcon className="size-5 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
           value={values.email}
           onChange={handleChange}
           isInvalid={!!errors.email}
@@ -100,13 +111,13 @@ export default function Register() {
           endContent={
             <button className="focus:outline-none" type="button" onClick={() => toggleVisibilityPassword('password')}>
               {isVisible.password ? (
-                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                <EyeSlashIcon className="size-5 text-2xl text-default-400 pointer-events-none" />
               ) : (
-                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                <EyeIcon className="size-5 text-2xl text-default-400 pointer-events-none" />
               )}
             </button>
           }
-          startContent={<PasswordIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<LockClosedIcon className="size-5 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
           value={values.password}
           onChange={handleChange}
           isInvalid={!!errors.password}
@@ -124,13 +135,13 @@ export default function Register() {
           endContent={
             <button className="focus:outline-none" type="button" onClick={() => toggleVisibilityPassword('confirmPassword')}>
               {isVisible.confirmPassword ? (
-                <EyeSlashFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                <EyeSlashIcon className="size-5 text-2xl text-default-400 pointer-events-none" />
               ) : (
-                <EyeFilledIcon className="text-2xl text-default-400 pointer-events-none" />
+                <EyeIcon className="size-5 text-2xl text-default-400 pointer-events-none" />
               )}
             </button>
           }
-          startContent={<PasswordIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<LockClosedIcon className="size-5 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
           value={values.confirmPassword}
           onChange={handleChange}
           isInvalid={!!errors.confirmPassword}

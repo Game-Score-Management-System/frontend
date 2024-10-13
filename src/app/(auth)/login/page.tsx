@@ -1,18 +1,34 @@
 'use client';
 import useForm from "@/app/ui/hooks/useForm";
 import { LoginFormValidationSchema } from "@/app/ui/schemas/loginForm.schema";
-import { MailIcon } from "@icons/MailIcon";
-import { PasswordIcon } from "@icons/PasswordIcon";
+import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
+
 import { Button, Input } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function Login() {
+  const router = useRouter();
 
   const onLogin = async () => {
     console.log('iniciando sesión', values);
+
+    const simulaEspera = async () => {
+      return await new Promise((resolve) => {
+        setTimeout(resolve, 1000);
+      });
+    }
+
+    await toast.promise(
+      simulaEspera(),
+      { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
+    );
+
+    router.push('/dashboard');
   }
 
   const { values, errors, validForm, handleSubmit, handleChange } = useForm(
-    { email: '', password: '' },
+    { email: 'juang20133@gmail.com', password: '123456' },
     LoginFormValidationSchema,
     onLogin
   )
@@ -40,7 +56,8 @@ export default function Login() {
           labelPlacement="outside"
           className="flex-1"
           classNames={{ inputWrapper: inputWrapperClasses }}
-          startContent={<MailIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<EnvelopeIcon className="size-5 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          value={values.email}
           isInvalid={!!errors.email}
           errorMessage={errors.email}
           onChange={handleChange}
@@ -53,7 +70,8 @@ export default function Login() {
           labelPlacement="outside"
           className="flex-1"
           classNames={{ inputWrapper: inputWrapperClasses }}
-          startContent={<PasswordIcon className="text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          startContent={<LockClosedIcon className="size-5 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+          value={values.password}
           isInvalid={!!errors.password}
           errorMessage={errors.password}
           onChange={handleChange}
@@ -62,7 +80,7 @@ export default function Login() {
       <Button
         type="submit"
         className={`
-          ${validForm === false && 'cursor-not-allowed'} 
+          ${validForm === false ? 'cursor-not-allowed' : ''} 
           bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase
         `}
       >
