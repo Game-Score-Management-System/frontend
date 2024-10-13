@@ -2,8 +2,17 @@
 
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownTrigger, User, DropdownMenu, DropdownItem } from "@nextui-org/react";
+import { useRouter } from "next/navigation";
 
 export default function Logout() {
+  const router = useRouter();
+
+  const logout = () => {
+    console.log('cerrando sesión');
+    router.push('/login');
+  }
+
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -25,8 +34,8 @@ export default function Logout() {
           </p>
           <p className="font-bold">@tonyreichert</p>
         </DropdownItem>
-        <DropdownItem key="logout" color="danger" >
-          <div className="flex items-center gap-2">
+        <DropdownItem key="logout" color="danger">
+          <div className="flex items-center gap-2" onClick={() => logout()}>
             <ArrowLeftEndOnRectangleIcon className="size-5" />
             Cerar Sesion
           </div>
