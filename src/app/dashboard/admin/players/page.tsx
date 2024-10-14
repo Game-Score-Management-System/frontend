@@ -7,6 +7,10 @@ export const metadata: Metadata = {
 
 export default function PlayersAdminPage() {
   return (
-    <h1>PlayersAdminPage</h1>
+    <>
+      <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
+        Gestión de Jugadores 🎮
+      </h2>
+    </>
   );
 }

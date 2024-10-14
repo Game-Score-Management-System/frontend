@@ -6,7 +6,7 @@ export default function RankTable({ columnNames, data }: {
   data: Leaderboard[]
 }) {
   return (
-    <table className="w-full overflow-hidden table-auto ">
+    <table className="w-full overflow-hidden table-auto">
       <thead className="text-xs text-white uppercase font-sweater bg-black/60">
         <tr>
           {columnNames.map((columnName, index) => (

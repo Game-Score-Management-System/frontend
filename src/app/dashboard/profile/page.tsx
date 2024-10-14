@@ -7,6 +7,10 @@ export const metadata: Metadata = {
 
 export default function ProfilePage() {
   return (
-    <h1>ProfilePage</h1>
+    <>
+      <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
+        Mi Perfil 😎
+      </h2>
+    </>
   );
 }

@@ -7,6 +7,10 @@ export const metadata: Metadata = {
 
 export default function ScoresAdminPage() {
   return (
-    <h1>ScoresAdminPage</h1>
+    <>
+      <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
+        Gestión de Scores 🔝
+      </h2>
+    </>
   );
 }

@@ -12,7 +12,7 @@ const routes = [
   { name: 'Ranking Global', href: '/dashboard/leaderboard', icon: GlobeAltIcon },
   {
     name: 'Mis Puntuaciones',
-    href: '/dashboard/scores/3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    href: '/dashboard/scores/3fa85f64-5717-4562-b3fc-2c963f66afa1',
     icon: StarIcon
   },
   { name: 'Perfil', href: '/dashboard/profile', icon: UserIcon },

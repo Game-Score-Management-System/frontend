@@ -3,6 +3,7 @@
 import { Select, SelectItem } from "@nextui-org/react"
 
 export default function SelectorGame() {
+
   return (
     <header className="w-full">
       <Select
@@ -10,6 +11,7 @@ export default function SelectorGame() {
         label="Selecciona un juego"
         className="w-full "
         defaultSelectedKeys={['tetris']}
+
       >
         <SelectItem key='tetris'>
           Tetris
