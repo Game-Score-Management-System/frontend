@@ -1,6 +1,6 @@
 export const USERS_DATA = [
   {
-    id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa1',
     name: 'John Doe',
     email: 'admin@domain.com',
     role: 'ADMIN',
@@ -8,7 +8,7 @@ export const USERS_DATA = [
     profilePicture: 'https://robohash.org/luis'
   },
   {
-    id: '1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa2',
     name: 'Jane Smith',
     email: 'jane.smith@example.com',
     role: 'USER',
@@ -16,7 +16,7 @@ export const USERS_DATA = [
     profilePicture: 'https://robohash.org/jane'
   },
   {
-    id: '2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa3',
     name: 'Alice Johnson',
     email: 'alice.johnson@example.com',
     role: 'USER',
@@ -24,7 +24,7 @@ export const USERS_DATA = [
     profilePicture: 'https://robohash.org/alice'
   },
   {
-    id: '3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa4',
     name: 'Bob Brown',
     email: 'bob.brown@example.com',
     role: 'USER',
@@ -32,7 +32,7 @@ export const USERS_DATA = [
     profilePicture: 'https://robohash.org/bob'
   },
   {
-    id: '4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa5',
     name: 'Charlie Davis',
     email: 'charlie.davis@example.com',
     role: 'USER',
@@ -40,7 +40,7 @@ export const USERS_DATA = [
     profilePicture: 'https://robohash.org/charlie'
   },
   {
-    id: '5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t',
+    id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
     name: 'Eve White',
     email: 'eve.white@example.com',
     role: 'USER',
@@ -51,40 +51,40 @@ export const USERS_DATA = [
 
 export const SCORE_DATA = [
   {
-    scoreId: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    userId: '1a2b3c4d-5e6f-7g8h-9i0j-1k2l3m4n5o6p',
+    scoreId: '2c963f66afa6-5717-4562-b3fc-3fa85f51',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa1',
     game: 'Tetris',
     score: 500,
     createdAt: '2024-10-13T22:39:46.512Z',
-    updatedAt: '2024-10-13T22:39:46.512Z'
+    updatedAt: null
   },
   {
-    scoreId: '3fa85f64-5717-4562-b3fc-2c963f66afa1',
-    userId: '2b3c4d5e-6f7g-8h9i-0j1k-2l3m4n5o6p7q',
+    scoreId: '2c963f66afa6-5717-4562-b3fc-3fa85f52',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa1',
     game: 'Pac-Man',
     score: 750,
     createdAt: '2024-10-14T10:15:30.000Z',
     updatedAt: '2024-10-14T10:15:30.000Z'
   },
   {
-    scoreId: '3fa85f64-5717-4562-b3fc-2c963f66afa2',
-    userId: '3c4d5e6f-7g8h-9i0j-1k2l-3m4n5o6p7q8r',
+    scoreId: '2c963f66afa6-5717-4562-b3fc-3fa85f53',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa2',
     game: 'Super Mario',
     score: 1200,
     createdAt: '2024-10-15T14:20:00.000Z',
     updatedAt: '2024-10-15T14:20:00.000Z'
   },
   {
-    scoreId: '3fa85f64-5717-4562-b3fc-2c963f66afa3',
-    userId: '4d5e6f7g-8h9i-0j1k-2l3m-4n5o6p7q8r9s',
+    scoreId: '2c963f66afa6-5717-4562-b3fc-3fa85f54',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa2',
     game: 'Space Invaders',
     score: 950,
     createdAt: '2024-10-16T18:45:15.000Z',
     updatedAt: '2024-10-16T18:45:15.000Z'
   },
   {
-    scoreId: '3fa85f64-5717-4562-b3fc-2c963f66afa4',
-    userId: '5e6f7g8h-9i0j-1k2l-3m4n-5o6p7q8r9s0t',
+    scoreId: '2c963f66afa6-5717-4562-b3fc-3fa85f55',
+    userId: '3fa85f64-5717-4562-b3fc-2c963f66afa3',
     game: 'Donkey Kong',
     score: 1100,
     createdAt: '2024-10-17T20:30:45.000Z',

@@ -8,7 +8,7 @@ export async function GET(): Promise<NextResponse<Leaderboard[]>> {
   const usersData = await usersInfo.json();
 
   const scoresInfo = SCORE_DATA.map((userScore) => {
-    const userInfo = usersData.data.find(
+    const userInfo = usersData.find(
       (userData: { id: string }) => userData.id === userScore.userId
     ) as User;
     return {
