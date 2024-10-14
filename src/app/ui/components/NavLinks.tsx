@@ -1,25 +1,16 @@
 'use client';
 
-import { HomeIcon, GlobeAltIcon, StarIcon, UserIcon, UsersIcon, DocumentChartBarIcon } from '@heroicons/react/24/outline';
+import routes from '@/app/lib/routes';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
-
-const links = [
-  { name: 'Inicio', href: '/dashboard', icon: HomeIcon },
-  { name: 'Ranking Global', href: '/dashboard/ranking', icon: GlobeAltIcon },
-  { name: 'Mis Puntuaciones', href: '/dashboard/scores', icon: StarIcon },
-  { name: 'Perfil', href: '/dashboard/profile', icon: UserIcon },
-  { name: 'Gestión de Jugadores', href: '/dashboard/admin/players', icon: UsersIcon },
-  { name: 'Gestión de Scores', href: '/dashboard/admin/scores', icon: DocumentChartBarIcon },
-];
 
 export default function NavLinks() {
   const pathname = usePathname();
 
   return (
     <>
-      {links.map((link) => {
+      {routes.map((link) => {
         const LinkIcon = link.icon;
         return (
           <Link
