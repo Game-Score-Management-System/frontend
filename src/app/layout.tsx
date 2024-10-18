@@ -2,6 +2,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { NextUIProvider } from "@nextui-org/react";
 import { Montserrat } from "next/font/google"
+import { ReduxProvider } from "@/store/provider";
 
 const montserrat = Montserrat({ subsets: ['latin'] })
 
@@ -21,7 +22,9 @@ export default function RootLayout({
         className={`${montserrat.className} antialiased  dark text-foreground bg-background`}
       >
         <NextUIProvider>
-          {children}
+          <ReduxProvider>
+            {children}
+          </ReduxProvider>
         </NextUIProvider>
       </body>
     </html>
