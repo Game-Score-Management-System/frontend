@@ -1,6 +1,8 @@
 'use client';
 import useForm from "@/app/ui/hooks/useForm";
+import { useAppDispatch } from "@/app/ui/hooks/useStore";
 import { LoginFormValidationSchema } from "@/app/ui/schemas/loginForm.schema";
+import { login } from "@/store/slices/userSlice";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 import { Button, Input } from "@nextui-org/react";
@@ -9,6 +11,7 @@ import toast from "react-hot-toast";
 
 export default function Login() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
   const onLogin = async () => {
     console.log('iniciando sesión', values);
@@ -18,6 +21,11 @@ export default function Login() {
         setTimeout(resolve, 1000);
       });
     }
+
+    dispatch(login({
+      email: values.email,
+      token: '123456',
+    }));
 
     await toast.promise(
       simulaEspera(),

@@ -3,12 +3,18 @@
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownTrigger, User, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import { useRouter } from "next/navigation";
+import { useAppDispatch } from "../hooks/useStore";
+import { logout } from "@/store/slices/userSlice";
 
 export default function Logout() {
   const router = useRouter();
+  const dispatch = useAppDispatch();
 
-  const logout = () => {
+  const handleLogout = () => {
     console.log('cerrando sesión');
+
+    dispatch(logout());
+
     router.push('/login');
   }
 
@@ -39,7 +45,7 @@ export default function Logout() {
           <p className="font-bold">@tonyreichert</p>
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
-          <div className="flex items-center gap-2" onClick={() => logout()}>
+          <div className="flex items-center gap-2" onClick={() => handleLogout()}>
             <ArrowLeftEndOnRectangleIcon className="size-5" />
             Cerar Sesion
           </div>

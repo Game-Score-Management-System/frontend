@@ -5,7 +5,7 @@ export interface Score {
   userId: string;
   game: string;
   score: number;
-  createdAt: Date;
+  createdAt: Date | string;
   updatedAt: null;
   user: User;
 }
