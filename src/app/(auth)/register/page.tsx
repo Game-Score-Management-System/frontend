@@ -1,12 +1,12 @@
 'use client';
+import toast from "react-hot-toast";
 import { Input, Button } from "@nextui-org/react";
 import { RegisterFormValidationSchema } from "@/app/ui/schemas/registerForm.schema";
 import { useState } from "react";
 import useForm from "@/app/ui/hooks/useForm";
 import { useRouter } from 'next/navigation';
-
-import toast from "react-hot-toast";
 import { EnvelopeIcon, EyeIcon, EyeSlashIcon, LockClosedIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { inputWrapperClasses } from "@lib/utils";
 
 
 export default function Register() {
@@ -29,7 +29,7 @@ export default function Register() {
   }
 
   const { values, errors, validForm, handleSubmit, handleChange } = useForm(
-    { email: '', name: '', lastName: '', password: '', confirmPassword: '' },
+    { email: '', name: '', lastname: '', password: '', confirmPassword: '' },
     RegisterFormValidationSchema,
     onRegister
   )
@@ -46,17 +46,7 @@ export default function Register() {
     }));
   };
 
-  const inputWrapperClasses = [
-    "shadow-xl",
-    "bg-default-200/50",
-    "dark:bg-default/60",
-    "backdrop-blur-xl",
-    "backdrop-saturate-200",
-    "hover:bg-default-200/70",
-    "dark:hover:bg-default/70",
-    "group-data-[focus=true]:bg-default-200/50",
-    "dark:group-data-[focus=true]:bg-default/60",
-  ]
+
 
   return (
     <form className="flex justify-start w-full mt-4 md:mt-10 flex-col gap-5" onSubmit={handleSubmit} >
@@ -76,16 +66,16 @@ export default function Register() {
         />
         <Input
           type="text"
-          name="lastName"
+          name="lastname"
           label="Ingresa tu apellido"
           placeholder="Doe"
           labelPlacement="outside"
           classNames={{ inputWrapper: inputWrapperClasses }}
           startContent={<UserCircleIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
-          value={values.lastName}
+          value={values.lastname}
           onChange={handleChange}
-          isInvalid={!!errors.lastName}
-          errorMessage={errors.lastName}
+          isInvalid={!!errors.lastname}
+          errorMessage={errors.lastname}
         />
         <Input
           type="email"

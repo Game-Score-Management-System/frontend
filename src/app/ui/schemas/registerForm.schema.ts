@@ -5,7 +5,7 @@ export const RegisterFormValidationSchema = yup.object().shape({
     .string()
     .required('El nombre es requerido')
     .max(20, 'El nombre no puede tener más de 20 caracteres'),
-  lastName: yup
+  lastname: yup
     .string()
     .required('El apellido es requerido')
     .max(20, 'El apellido no puede tener más de 20 caracteres'),

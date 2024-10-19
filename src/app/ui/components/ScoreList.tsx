@@ -40,7 +40,7 @@ export default function ScoreList() {
         <User
           avatarProps={{ radius: "lg", src: user.profilePicture }}
           description={user.email}
-          name={user.name}
+          name={`${user.name} ${user.lastname}`}
         >
           {user.email}
         </User>

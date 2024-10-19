@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import { NextUIProvider } from "@nextui-org/react";
 import { Montserrat } from "next/font/google"
 import { ReduxProvider } from "@/store/provider";
+import { Toaster } from "react-hot-toast";
 
 const montserrat = Montserrat({ subsets: ['latin'] })
 
@@ -21,6 +22,7 @@ export default function RootLayout({
       <body
         className={`${montserrat.className} antialiased  dark text-foreground bg-background`}
       >
+        <Toaster />
         <NextUIProvider>
           <ReduxProvider>
             {children}

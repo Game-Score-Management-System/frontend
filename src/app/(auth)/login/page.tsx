@@ -1,7 +1,8 @@
 'use client';
-import useForm from "@/app/ui/hooks/useForm";
-import { useAppDispatch } from "@/app/ui/hooks/useStore";
-import { LoginFormValidationSchema } from "@/app/ui/schemas/loginForm.schema";
+import { inputWrapperClasses } from "@lib/utils";
+import useForm from "@hooks/useForm";
+import { useAppDispatch } from "@hooks/useStore";
+import { LoginFormValidationSchema } from "@schemas/loginForm.schema";
 import { login } from "@/store/slices/userSlice";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
@@ -40,18 +41,6 @@ export default function Login() {
     LoginFormValidationSchema,
     onLogin
   )
-
-  const inputWrapperClasses = [
-    "shadow-xl",
-    "bg-default-200/50",
-    "dark:bg-default/60",
-    "backdrop-blur-xl",
-    "backdrop-saturate-200",
-    "hover:bg-default-200/70",
-    "dark:hover:bg-default/70",
-    "group-data-[focus=true]:bg-default-200/50",
-    "dark:group-data-[focus=true]:bg-default/60",
-  ]
 
   return (
     <form className="flex justify-start w-full mt-4 md:mt-10 flex-col gap-5" onSubmit={handleSubmit} >

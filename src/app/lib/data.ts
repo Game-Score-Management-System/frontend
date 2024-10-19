@@ -1,7 +1,8 @@
 export const USERS_DATA = [
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa1',
-    name: 'John Doe',
+    name: 'John',
+    lastname: 'Smith',
     email: 'admin@domain.com',
     role: 'ADMIN',
     username: 'johndoe@',
@@ -12,7 +13,8 @@ export const USERS_DATA = [
   },
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa2',
-    name: 'Jane Smith',
+    name: 'Jane',
+    lastname: 'Doe',
     email: 'jane.smith@example.com',
     role: 'USER',
     username: 'janesmith',
@@ -23,7 +25,8 @@ export const USERS_DATA = [
   },
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa3',
-    name: 'Alice Johnson',
+    name: 'Alice',
+    lastname: 'Brown',
     email: 'alice.johnson@example.com',
     role: 'USER',
     username: 'alicejohnson',
@@ -34,7 +37,8 @@ export const USERS_DATA = [
   },
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa4',
-    name: 'Bob Brown',
+    name: 'Bob',
+    lastname: 'Davis',
     email: 'bob.brown@example.com',
     role: 'USER',
     username: 'bobbrown',
@@ -45,7 +49,8 @@ export const USERS_DATA = [
   },
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa5',
-    name: 'Charlie Davis',
+    name: 'Charlie',
+    lastname: 'White',
     email: 'charlie.davis@example.com',
     role: 'USER',
     username: 'charliedavis',
@@ -56,7 +61,8 @@ export const USERS_DATA = [
   },
   {
     id: '3fa85f64-5717-4562-b3fc-2c963f66afa6',
-    name: 'Eve White',
+    name: 'Eve',
+    lastname: 'Black',
     email: 'eve.white@example.com',
     role: 'USER',
     username: 'evewhite',

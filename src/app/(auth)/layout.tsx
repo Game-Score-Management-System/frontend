@@ -6,7 +6,6 @@ import { usePathname } from 'next/navigation'
 import Link from "next/link";
 import SignersFooter from '../ui/components/SignersFooter';
 import { Divider } from '@nextui-org/react';
-import { Toaster } from 'react-hot-toast';
 
 
 export default function Layout({ children }: { children: React.ReactNode }) {
@@ -14,7 +13,6 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   const isLogin = pathname === "/login";
   return (
     <main className="text-[#fcfcfb] w-full min-h-screen md:grid md:grid-cols-[3fr,2fr]">
-      <Toaster />
       <article className="hidden md:block relative">
         <img src="/bg.jpg" className="object-cover w-full h-full absolute backdrop-brightness-90" alt="Background Image" />
       </article>

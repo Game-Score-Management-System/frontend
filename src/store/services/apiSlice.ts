@@ -35,6 +35,9 @@ export const apiSlice = createApi({
         method: 'PUT',
         body
       })
+    }),
+    getUserProfile: builder.query<User, string>({
+      query: (id) => `users/profile/${id}`
     })
   })
 });
@@ -43,5 +46,6 @@ export const {
   useGetScoresQuery,
   useDeleteScoreMutation,
   useCreateNewScoreMutation,
-  useGetAllUsersQuery
+  useGetAllUsersQuery,
+  useGetUserProfileQuery
 } = apiSlice;

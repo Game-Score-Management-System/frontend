@@ -40,14 +40,14 @@ export default function UserList() {
   }, []);
 
   const renderCell = useCallback((user: User, columnKey: Key) => {
-    const { name, email, role, status, id, createdAt } = user;
+    const { name, lastname, email, role, status, id, createdAt } = user;
 
     const cellRenderers: { [key: string]: JSX.Element } = {
       name: (
         <UserNextUi
           avatarProps={{ radius: "lg", src: user.profilePicture }}
           description={email}
-          name={name}
+          name={`${name} ${lastname}`}
         >
           {email}
         </UserNextUi>

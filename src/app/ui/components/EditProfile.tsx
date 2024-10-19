@@ -1,0 +1,114 @@
+'use client';
+import { inputWrapperClasses, MAX_IMAGE_PROFILE_SIZE } from "@/app/lib/utils";
+import { CameraIcon, UserCircleIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Button, Chip, Image, Input } from "@nextui-org/react";
+import useForm from "@hooks/useForm";
+import { UserEditable } from "@models/User.model";
+import { EditableProfileForm } from "@schemas/editableProfileForm.schema";
+import { useRef } from "react";
+import toast from "react-hot-toast";
+import { User } from "@models/User.model";
+
+export default function EditProfile({ user }: { user: User }) {
+
+  const onSubmit = () => {
+    console.log("Valido", validForm);
+    console.log('Enviando datos', values);
+  };
+
+  const { values, validForm, errors, handleChange, handleSubmit } = useForm<UserEditable>({
+    lastname: user.lastname,
+    name: user.name,
+    profilePicture: user.profilePicture,
+    username: user.username
+  }, EditableProfileForm, onSubmit);
+  const imageInputRef = useRef<HTMLInputElement>(null);
+
+  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    const size = file?.size ?? 0;
+
+    if (size > MAX_IMAGE_PROFILE_SIZE) {
+      toast.error(`La imagen excede el tamaño máximo permitido de ${MAX_IMAGE_PROFILE_SIZE / (1024 * 1024)}MB`);
+      return;
+    }
+
+    // Enviar archivo al storage
+    console.log(file);
+  };
+
+
+  return (
+    <section className="w-full relative">
+      <div className="flex flex-col items-center bg-card-image bg-cover bg-center bg-no-repeat shadow-lg p-6 md:p-12 gap-6 pb-8 overflow-hidden rounded-lg ">
+        <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full border-3 border-gray-700 overflow-hidden shadow-lg backdrop-blur-3xl group">
+          <Image
+            isBlurred
+            src={values.profilePicture}
+            alt='User'
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-65 cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            <span className="text-white text-sm md:text-lg">
+              <CameraIcon width={30} height={30} onClick={() => imageInputRef.current?.click()} />
+              <input type="file" className="hidden" accept="image/*" ref={imageInputRef} onChange={handleUploadImage} />
+            </span>
+          </div>
+        </div>
+        <Chip variant="dot" color="success" className="text-xl backdrop-blur-3xl">{user.username}</Chip>
+        <form className="flex justify-start w-full  flex-col gap-5 backdrop-blur-3xl backdrop-brightness-110 py-7 px-10 rounded-xl" onSubmit={handleSubmit}>
+          <div className="grid md:grid-cols-2 gap-4 w-full mb-6 md:mb-0">
+            <Input
+              type="text"
+              name="name"
+              label="Tu nombre"
+              placeholder="John"
+              labelPlacement="outside"
+              classNames={{ inputWrapper: inputWrapperClasses }}
+              startContent={<UserCircleIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+              value={values.name}
+              onChange={handleChange}
+              isInvalid={!!errors.name}
+              errorMessage={errors.name}
+            />
+            <Input
+              type="text"
+              name="lastname"
+              label="Tu apellido"
+              placeholder="Doe"
+              labelPlacement="outside"
+              classNames={{ inputWrapper: inputWrapperClasses }}
+              startContent={<UserCircleIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+              value={values.lastname}
+              onChange={handleChange}
+              isInvalid={!!errors.lastname}
+              errorMessage={errors.lastname}
+            />
+          </div>
+          <Input
+            type="text"
+            name="username"
+            label="Tu nombre de usuario"
+            placeholder="@JohnDoe"
+            labelPlacement="outside"
+            classNames={{ inputWrapper: inputWrapperClasses }}
+            startContent={<UserIcon className="size-6 text-2xl text-default-400 pointer-events-none flex-shrink-0" />}
+            value={values.username}
+            onChange={handleChange}
+            isInvalid={!!errors.username}
+            errorMessage={errors.username}
+          />
+
+          <Button
+            type="submit"
+            className={`bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase`}
+          >
+            Guardar Cambios
+          </Button>
+        </form>
+      </div>
+
+
+    </section>
+  )
+}
