@@ -18,9 +18,9 @@ export default async function ScoresPage({ params }: { params: { userId: string 
       </h2>
       <section className="grid  gap-5">
         {
-          data.map(({ scoreId, score, user, game }) => {
+          data.map(({ id, score, user, game }) => {
             return <OwnRankingPositionCard
-              key={scoreId}
+              key={id}
               title={`Tus resultados en ${game}`}
               profilePicture={user.profilePicture}
               score={score}

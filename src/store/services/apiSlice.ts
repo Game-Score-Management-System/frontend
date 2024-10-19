@@ -1,4 +1,5 @@
-import { Score } from '@/app/ui/models/Score.model';
+import { Score } from '@models/Score.model';
+import { User } from '@models/User.model';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -24,8 +25,23 @@ export const apiSlice = createApi({
         method: 'POST',
         body
       })
+    }),
+    getAllUsers: builder.query<User[], void>({
+      query: () => 'users/admin'
+    }),
+    updateUser: builder.mutation<User, Partial<User>>({
+      query: (body) => ({
+        url: `users/${body.id}`,
+        method: 'PUT',
+        body
+      })
     })
   })
 });
 
-export const { useGetScoresQuery, useDeleteScoreMutation, useCreateNewScoreMutation } = apiSlice;
+export const {
+  useGetScoresQuery,
+  useDeleteScoreMutation,
+  useCreateNewScoreMutation,
+  useGetAllUsersQuery
+} = apiSlice;

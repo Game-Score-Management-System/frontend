@@ -1,7 +1,7 @@
 import { User } from './User.model';
 
 export interface Score {
-  scoreId: string;
+  id: string;
   userId: string;
   game: string;
   score: number;

@@ -11,6 +11,6 @@ export async function GET(request: Request, context: { params: Params }) {
 
 export async function DELETE(request: Request, context: { params: Params }) {
   const { scoreId } = context.params;
-  const scores = SCORE_DATA.filter((score) => score.scoreId !== scoreId);
+  const scores = SCORE_DATA.filter((score) => score.id !== scoreId);
   return NextResponse.json(scores);
 }

@@ -1,142 +1,128 @@
 'use client';
-import React, { useCallback } from "react";
-import { Table, TableHeader, TableColumn, TableBody, TableRow, TableCell, User, Chip, Tooltip, getKeyValue } from "@nextui-org/react";
-import { PencilIcon, EyeIcon, TrashIcon } from "@heroicons/react/20/solid";
+import { Key, useCallback } from "react";
+import { User as UserNextUi, Chip, Tooltip, Switch } from "@nextui-org/react";
+import { PencilIcon } from "@heroicons/react/20/solid";
+import { formatDate } from "@lib/utils";
+import { useGetAllUsersQuery } from "@store/services/apiSlice";
+import type { User } from "@models/User.model";
+import AdminTable from "@components/AdminTable";
+import TablePaginator from "@components/TablePaginator";
+import Search from "@components/Search";
+import usePaginator from "@hooks/usePaginator";
 
 const columns = [
-  { name: "NAME", uid: "name" },
-  { name: "ROLE", uid: "role" },
-  { name: "STATUS", uid: "status" },
-  { name: "ACTIONS", uid: "actions" },
+  { name: "Nombre Jugador", uid: "name" },
+  { name: "Rol", uid: "role" },
+  { name: "Estado", uid: "status" },
+  { name: 'Fecha Registro', uid: 'createdAt' },
+  { name: "Acciones", uid: "actions" },
 ];
 
-const users = [
-  {
-    id: 1,
-    name: "Tony Reichert",
-    role: "CEO",
-    team: "Management",
-    status: "active",
-    age: "29",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026024d",
-    email: "tony.reichert@example.com",
-  },
-  {
-    id: 2,
-    name: "Zoey Lang",
-    role: "Technical Lead",
-    team: "Development",
-    status: "paused",
-    age: "25",
-    avatar: "https://i.pravatar.cc/150?u=a042581f4e29026704d",
-    email: "zoey.lang@example.com",
-  },
-  {
-    id: 3,
-    name: "Jane Fisher",
-    role: "Senior Developer",
-    team: "Development",
-    status: "active",
-    age: "22",
-    avatar: "https://i.pravatar.cc/150?u=a04258114e29026702d",
-    email: "jane.fisher@example.com",
-  },
-  {
-    id: 4,
-    name: "William Howard",
-    role: "Community Manager",
-    team: "Marketing",
-    status: "vacation",
-    age: "28",
-    avatar: "https://i.pravatar.cc/150?u=a048581f4e29026701d",
-    email: "william.howard@example.com",
-  },
-  {
-    id: 5,
-    name: "Kristen Copper",
-    role: "Sales Manager",
-    team: "Sales",
-    status: "active",
-    age: "24",
-    avatar: "https://i.pravatar.cc/150?u=a092581d4ef9026700d",
-    email: "kristen.cooper@example.com",
-  },
-];
-
-const statusColorMap = {
-  active: "success",
-  paused: "danger",
-  vacation: "warning",
+const statusColorMap: { [key: string]: "success" | "default" | "primary" | "secondary" | "warning" | "danger" } = {
+  Activo: "success",
+  Inactivo: "danger",
 };
 
 export default function UserList() {
-  const renderCell = useCallback((user, columnKey) => {
-    const cellValue = user[columnKey];
-    if (columnKey === "name") {
-      return (
-        <User
-          avatarProps={{ radius: "lg", src: user.avatar }}
-          description={user.email}
-          name={cellValue}
+  const { data: users = [], isLoading } = useGetAllUsersQuery();
+  const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<User>(users, 5);
+  // const [users, setUsers] = useState<User[]>([]);
+  // const [rowsPerPage, setRowsPerPage] = useState(5);
+
+  const handleUserStatusChange = useCallback((userId: string) => {
+    console.log('cambiando estado del usuario', userId);
+    // setUsers(users.map(user => {
+    //   if (user.id === userId) {
+    //     return { ...user, status: !user.status };
+    //   }
+    //   return user;
+    // }));
+  }, []);
+
+  const renderCell = useCallback((user: User, columnKey: Key) => {
+    const { name, email, role, status, id, createdAt } = user;
+
+    const cellRenderers: { [key: string]: JSX.Element } = {
+      name: (
+        <UserNextUi
+          avatarProps={{ radius: "lg", src: user.profilePicture }}
+          description={email}
+          name={name}
         >
-          {user.email}
-        </User>
-      );
-    } else if (columnKey === "role") {
-      return (
+          {email}
+        </UserNextUi>
+      ),
+      role: (
         <div className="flex flex-col">
-          <p className="text-bold text-sm capitalize">{cellValue}</p>
-          <p className="text-bold text-sm capitalize text-default-400">{user.team}</p>
+          <p className="text-bold text-sm capitalize">{role}</p>
         </div>
-      );
-    } else if (columnKey === "status") {
-      return (
-        <Chip className="capitalize" color={statusColorMap[user.status]} size="sm" variant="flat">
-          {cellValue}
+      ),
+      status: (
+        <Chip className="capitalize" color={statusColorMap[Boolean(status) ? "Activo" : "Inactivo"]} size="sm" variant="flat">
+          {Boolean(status) ? "Activo" : "Inactivo"}
         </Chip>
-      );
-    } else if (columnKey === "actions") {
-      return (
-        <div className="relative flex items-center gap-2">
-          <Tooltip content="Details">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <EyeIcon width={20} height={20} />
-            </span>
-          </Tooltip>
-          <Tooltip content="Edit user">
+      ),
+      createdAt: (
+        <div className="flex flex-col">
+          <p className="text-xs capitalize">{formatDate(createdAt)}</p>
+        </div>
+      ),
+      actions: (
+        <div className="relative flex items-center gap-2 justify-center">
+          <Tooltip content="Editar usuario">
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
               <PencilIcon width={20} height={20} />
             </span>
           </Tooltip>
-          <Tooltip color="danger" content="Delete user">
-            <span className="text-lg text-danger cursor-pointer active:opacity-50">
-              <TrashIcon width={20} height={20} />
+          <Tooltip content={status ? "Desactivar usuario" : "Activar usuario"} color={status ? "danger" : "success"}>
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+              <Switch defaultSelected={status} size="sm" aria-label="Automatic updates" color="primary" onChange={() => handleUserStatusChange(id)} />
             </span>
           </Tooltip>
         </div>
-      );
-    } else {
-      return cellValue;
-    }
+      )
+    };
 
-  }, []);
+    return cellRenderers[columnKey.toString()] || null;
+  }, [handleUserStatusChange]);
+
+
+  // const HeaderContent = useMemo(() => {
+  //   return (
+  //     <header className="flex justify-between w-full">
+  //       <Search />
+  //       <div className="flex justify-between items-center">
+  //         <span className="text-default-400 text-small">Total {users.length} registros</span>
+  //         <label className="flex items-center text-default-400 text-small ms-1">
+  //           por página
+  //           <select
+  //             className="bg-transparent outline-none text-default-400 text-small"
+  //             onChange={onRowsPerPageChange}
+  //           >
+  //             <option value="5">5</option>
+  //             <option value="10">10</option>
+  //             <option value="15">15</option>
+  //           </select>
+  //         </label>
+  //       </div>
+  //     </header>
+  //   )
+  // }, [onRowsPerPageChange, users.length]);
+
+  // const onRowsPerPageChange = useCallback((e) => {
+  //   setRowsPerPage(Number(e.target.value));
+  //   // setPage(1);
+  // }, []);
+
 
   return (
-    <Table aria-label="Example table with custom cells">
-      <TableHeader columns={columns}>
-        {(column) => (
-          <TableColumn key={column.uid} align={column.uid === "actions" ? "center" : "start"}>
-            {column.name}
-          </TableColumn>
-        )}
-      </TableHeader>
-      <TableBody items={users}>
-        {(item) => (
-          <TableRow key={item.id}>
-            {(columnKey) => <TableCell>{renderCell(item, columnKey)}</TableCell>}
-          </TableRow>
-        )}
-      </TableBody>
-    </Table>
+    <AdminTable
+      columns={columns}
+      footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
+      header={<Search placeholder="Buscar por nombre..." />}
+      isLoading={isLoading}
+      items={itemsToShowInTable}
+      renderCell={renderCell}
+    />
   );
 }

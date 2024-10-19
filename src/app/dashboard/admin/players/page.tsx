@@ -1,3 +1,4 @@
+import UserList from "@/app/ui/components/UserList";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,6 +12,7 @@ export default function PlayersAdminPage() {
       <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
         Gestión de Jugadores 🎮
       </h2>
+      <UserList />
     </>
   );
 }
