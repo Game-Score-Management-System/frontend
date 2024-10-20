@@ -48,9 +48,12 @@ export default function EditProfile({ user }: { user: User }) {
             alt='User'
             className="w-full h-full object-cover"
           />
-          <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-65 cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+          <div
+            className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-65 cursor-pointer z-10 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+            onClick={() => imageInputRef.current?.click()}
+          >
             <span className="text-white text-sm md:text-lg">
-              <CameraIcon width={30} height={30} onClick={() => imageInputRef.current?.click()} />
+              <CameraIcon width={30} height={30} />
               <input type="file" className="hidden" accept="image/*" ref={imageInputRef} onChange={handleUploadImage} />
             </span>
           </div>
