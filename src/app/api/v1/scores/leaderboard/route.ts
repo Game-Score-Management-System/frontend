@@ -4,7 +4,7 @@ import { User } from '@/app/ui/models/User.model';
 import { NextResponse } from 'next/server';
 
 export async function GET(): Promise<NextResponse<Leaderboard[]>> {
-  const usersInfo = await fetch(`${process.env.API_URL}/users/admin`);
+  const usersInfo = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/users/admin`);
   const usersData = await usersInfo.json();
 
   const scoresInfo = SCORE_DATA.map((userScore) => {
