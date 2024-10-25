@@ -30,5 +30,3 @@ export const inputWrapperClasses = [
   'group-data-[focus=true]:bg-default-200/50',
   'dark:group-data-[focus=true]:bg-default/60'
 ];
-
-export const MAX_IMAGE_PROFILE_SIZE = 1024 * 1024 * 2; // 2MB

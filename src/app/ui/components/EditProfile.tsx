@@ -1,13 +1,15 @@
 'use client';
-import { inputWrapperClasses, MAX_IMAGE_PROFILE_SIZE } from "@/app/lib/utils";
+import { inputWrapperClasses } from "@/app/lib/utils";
 import { CameraIcon, UserCircleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Button, Chip, Image, Input } from "@nextui-org/react";
 import useForm from "@hooks/useForm";
 import { UserEditable } from "@models/User.model";
 import { EditableProfileForm } from "@schemas/editableProfileForm.schema";
-import { useRef } from "react";
+import { useRef, useState } from "react";
 import toast from "react-hot-toast";
 import { User } from "@models/User.model";
+import supabase from "@/config/supabase";
+import { MAX_IMAGE_PROFILE_SIZE, AVATARS_BUCKET_NAME } from "@/app/lib/constants";
 
 export default function EditProfile({ user }: { user: User }) {
 
@@ -22,19 +24,40 @@ export default function EditProfile({ user }: { user: User }) {
     profilePicture: user.profilePicture,
     username: user.username
   }, EditableProfileForm, onSubmit);
-  const imageInputRef = useRef<HTMLInputElement>(null);
 
-  const handleUploadImage = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const imageInputRef = useRef<HTMLInputElement>(null);
+  const [imageSrc, setImageSrc] = useState<{ url: string, loading: boolean }>({
+    url: user.profilePicture,
+    loading: false
+  });
+
+  const handleUploadImage = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     const size = file?.size ?? 0;
+
+    if (!file) {
+      toast.error('No se ha seleccionado ninguna imagen');
+      return;
+    };
 
     if (size > MAX_IMAGE_PROFILE_SIZE) {
       toast.error(`La imagen excede el tamaño máximo permitido de ${MAX_IMAGE_PROFILE_SIZE / (1024 * 1024)}MB`);
       return;
     }
+    const filename = `avatar-${crypto.randomUUID()}`;
 
-    // Enviar archivo al storage
-    console.log(file);
+    setImageSrc({ ...imageSrc, loading: true });
+    const { data, error } = await supabase.storage.from(AVATARS_BUCKET_NAME).upload(filename, file);
+    if (error) {
+      toast.error('Ha ocurrido un error al subir la imagen, intenta de nuevo');
+      return;
+    }
+    const { data: { publicUrl } } = supabase.storage.from(AVATARS_BUCKET_NAME).getPublicUrl(data?.path)
+    setImageSrc({ url: publicUrl, loading: false });
+
+    // Actualizar solo la imagen en la base de datos
+
+    toast.success('Imagen actualizada correctamente!');
   };
 
 
@@ -44,7 +67,8 @@ export default function EditProfile({ user }: { user: User }) {
         <div className="relative w-24 h-24 md:w-36 md:h-36 rounded-full border-3 border-gray-700 overflow-hidden shadow-lg backdrop-blur-3xl group">
           <Image
             isBlurred
-            src={values.profilePicture}
+            src={imageSrc.url ?? ''}
+            isLoading={imageSrc.loading}
             alt='User'
             className="w-full h-full object-cover"
           />
