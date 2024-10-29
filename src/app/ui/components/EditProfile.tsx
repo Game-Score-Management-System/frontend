@@ -10,8 +10,14 @@ import toast from "react-hot-toast";
 import { User } from "@models/User.model";
 import supabase from "@/config/supabase";
 import { MAX_IMAGE_PROFILE_SIZE, AVATARS_BUCKET_NAME } from "@/app/lib/constants";
+import useAppSession from "@hooks/useSession";
 
-export default function EditProfile({ user }: { user: User }) {
+export default function EditProfile() {
+
+  const { session } = useAppSession();
+  const user = session?.user as User;
+  console.log({ user });
+
 
   const onSubmit = () => {
     console.log("Valido", validForm);

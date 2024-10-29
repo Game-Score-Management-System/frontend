@@ -1,43 +1,54 @@
 'use client';
 import { inputWrapperClasses } from "@lib/utils";
 import useForm from "@hooks/useForm";
-import { useAppDispatch } from "@hooks/useStore";
+import { useRouter } from "next/navigation";
+// import { useAppDispatch } from "@hooks/useStore";
 import { LoginFormValidationSchema } from "@schemas/loginForm.schema";
-import { login } from "@/store/slices/userSlice";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 
 import { Button, Input } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
+// import toast from "react-hot-toast";
+import { iniciarSesion } from "@/app/lib/actions";
 import toast from "react-hot-toast";
+
 
 export default function Login() {
   const router = useRouter();
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
 
   const onLogin = async () => {
-    console.log('iniciando sesión', values);
 
-    const simulaEspera = async () => {
-      return await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      });
-    }
+    try {
+      await toast.promise(
+        iniciarSesion('credential', values),
+        { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: (e) => <b>{e.message}</b> }
+      )
+      router.push('/dashboard');
+    } catch (error) { }
 
-    dispatch(login({
-      email: values.email,
-      token: '123456',
-    }));
 
-    await toast.promise(
-      simulaEspera(),
-      { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
-    );
 
-    router.push('/dashboard');
+
+    // const simulaEspera = async () => {
+    //   return await new Promise((resolve) => {
+    //     setTimeout(resolve, 1000);
+    //   });
+    // }
+
+    // dispatch(login({
+    //   email: values.email,
+    //   token: '123456',
+    // }));
+
+    // await toast.promise(
+    //   simulaEspera(),
+    //   { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
+    // );
+
   }
 
-  const { values, errors, validForm, handleSubmit, handleChange } = useForm(
-    { email: 'juang20133@gmail.com', password: '123456' },
+  const { values, errors, handleSubmit, handleChange } = useForm(
+    { email: 'fake@gmail.com', password: 'admin12345' },
     LoginFormValidationSchema,
     onLogin
   )
@@ -77,7 +88,6 @@ export default function Login() {
       <Button
         type="submit"
         className={`
-          ${validForm === false ? 'cursor-not-allowed' : ''} 
           bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase
         `}
       >

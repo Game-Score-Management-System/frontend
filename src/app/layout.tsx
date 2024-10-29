@@ -5,6 +5,8 @@ import { Montserrat } from "next/font/google"
 import { ReduxProvider } from "@/store/provider";
 import { Toaster } from "react-hot-toast";
 
+import { SessionProvider } from "next-auth/react";
+
 const montserrat = Montserrat({ subsets: ['latin'] })
 
 export const metadata: Metadata = {
@@ -23,11 +25,13 @@ export default function RootLayout({
         className={`${montserrat.className} antialiased  dark text-foreground bg-background`}
       >
         <Toaster />
-        <NextUIProvider>
-          <ReduxProvider>
-            {children}
-          </ReduxProvider>
-        </NextUIProvider>
+        <SessionProvider >
+          <NextUIProvider>
+            <ReduxProvider>
+              {children}
+            </ReduxProvider>
+          </NextUIProvider>
+        </SessionProvider >
       </body>
     </html>
   );

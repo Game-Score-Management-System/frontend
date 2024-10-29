@@ -1,6 +1,7 @@
 import { Button } from "@nextui-org/react";
 import { GithubIcon } from "@icons/GithubIcon";
 import { GoogleIcon } from "@icons/GoogleIcon";
+import { iniciarSesion } from "@lib/actions"
 
 export default function SignersFooter() {
   return (
@@ -10,7 +11,11 @@ export default function SignersFooter() {
         <Button className="bg-[#fcfcfb] text-black font-bold w-full hover:scale-105 transition ease-in-out duration-200" endContent={<GoogleIcon />}>
           Google
         </Button>
-        <Button className="bg-[#fcfcfb] text-black font-bold w-full hover:scale-105 transition ease-in-out duration-200" endContent={<GithubIcon />}>
+        <Button
+          className="bg-[#fcfcfb] text-black font-bold w-full hover:scale-105 transition ease-in-out duration-200"
+          endContent={<GithubIcon />}
+          onClick={() => iniciarSesion("github")}
+        >
           Github
         </Button>
       </div>

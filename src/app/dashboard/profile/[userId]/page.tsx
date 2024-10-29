@@ -13,7 +13,7 @@ export default async function ProfilePage({ params }: { params: { userId: string
       <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
         Mi Perfil 😎
       </h2>
-      <EditProfile user={profile} />
+      <EditProfile />
     </>
   );
 }

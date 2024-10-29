@@ -20,5 +20,5 @@ export interface UserEditable {
 
 export enum Role {
   ADMIN = 'ADMIN',
-  USER = 'USER'
+  PLAYER = 'PLAYER'
 }

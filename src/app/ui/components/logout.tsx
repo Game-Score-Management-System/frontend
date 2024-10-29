@@ -1,23 +1,13 @@
 'use client';
 
+import { cerrarSesion } from "@/app/lib/actions";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownTrigger, User, DropdownMenu, DropdownItem } from "@nextui-org/react";
-import { useRouter } from "next/navigation";
-import { useAppDispatch } from "../hooks/useStore";
-import { logout } from "@/store/slices/userSlice";
+import useAppSession from "@hooks/useSession";
+
 
 export default function Logout() {
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-
-  const handleLogout = () => {
-    console.log('cerrando sesión');
-
-    dispatch(logout());
-
-    router.push('/login');
-  }
-
+  const { session } = useAppSession();
 
   return (
     <Dropdown placement="bottom-start">
@@ -26,15 +16,16 @@ export default function Logout() {
           as="button"
           avatarProps={{
             isBordered: true,
-            src: "https://robohash.org/random2",
+            src: session?.user?.profilePicture ?? "https://robohash.org/random2",
           }}
           className="transition-transform"
           description={
             <p className="text-sm font-normal text-gray-600 dark:text-gray-400">
-              @tonyreichert
+              {/* @tonyreichert */}
+              {session?.user?.username}
             </p>
           }
-          name="Juan Carlos Romero"
+          name={`${session?.user?.name} ${session?.user?.lastname}`}
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="shadow">
@@ -42,10 +33,12 @@ export default function Logout() {
           <p className="font-bold">
             Estas logueado como
           </p>
-          <p className="font-bold">@tonyreichert</p>
+          <p className="font-bold">
+            {session?.user?.username}
+          </p>
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
-          <div className="flex items-center gap-2" onClick={() => handleLogout()}>
+          <div className="flex items-center gap-2" onClick={() => cerrarSesion()}>
             <ArrowLeftEndOnRectangleIcon className="size-5" />
             Cerar Sesion
           </div>

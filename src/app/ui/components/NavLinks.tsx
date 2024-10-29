@@ -3,14 +3,29 @@
 import routes from '@/app/lib/routes';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import useAppSession from "@hooks/useSession";
 
 
 export default function NavLinks() {
   const pathname = usePathname();
+  const { session, status } = useAppSession();
+
+  if (status === 'loading') {
+    return (
+      <div className="flex flex-col gap-2 p-4">
+        <div className="h-8 bg-gray-200/70 backdrop-blur-xl backdrop-saturate-200 rounded animate-pulse"></div>
+        <div className="h-8 bg-gray-200/70 backdrop-blur-xl backdrop-saturate-200 rounded animate-pulse"></div>
+        <div className="h-8 bg-gray-200/70 backdrop-blur-xl backdrop-saturate-200 rounded animate-pulse"></div>
+        <div className="h-8 bg-gray-200/70 backdrop-blur-xl backdrop-saturate-200 rounded animate-pulse"></div>
+      </div >
+    )
+  }
+
+  const filteredRoutes = routes.filter((route) => route.roles.includes(session?.user?.role));
 
   return (
     <>
-      {routes.map((link) => {
+      {filteredRoutes.map((link) => {
         const LinkIcon = link.icon;
         return (
           <Link
