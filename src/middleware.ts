@@ -5,7 +5,7 @@ export default auth((req) => {
   const { auth, nextUrl } = req;
   const { pathname, origin } = nextUrl;
 
-  if (!auth && pathname !== '/login') {
+  if (!auth && pathname !== '/login' && pathname !== '/register') {
     return Response.redirect(new URL('/login', origin));
   }
 
