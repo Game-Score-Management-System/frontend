@@ -2,48 +2,34 @@
 import { inputWrapperClasses } from "@lib/utils";
 import useForm from "@hooks/useForm";
 import { useRouter } from "next/navigation";
-// import { useAppDispatch } from "@hooks/useStore";
 import { LoginFormValidationSchema } from "@schemas/loginForm.schema";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
-
-import { Button, Input } from "@nextui-org/react";
-// import toast from "react-hot-toast";
+import { Input } from "@nextui-org/react";
 import { iniciarSesion } from "@/app/lib/actions";
 import toast from "react-hot-toast";
+import AppButton from "@/app/ui/components/AppButton";
+import { useState } from "react";
 
 
 export default function Login() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
   // const dispatch = useAppDispatch();
 
   const onLogin = async () => {
-
     try {
+      setLoading(true);
       await toast.promise(
         iniciarSesion('credential', values),
         { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: (e) => <b>{e.message}</b> }
       )
-      router.push('/dashboard');
-    } catch (error) { }
+      router.push('/dashboard/leaderboard');
+    } catch (error) {
+      console.log('error', error);
+    } finally {
+      setLoading(false);
+    }
 
-
-
-
-    // const simulaEspera = async () => {
-    //   return await new Promise((resolve) => {
-    //     setTimeout(resolve, 1000);
-    //   });
-    // }
-
-    // dispatch(login({
-    //   email: values.email,
-    //   token: '123456',
-    // }));
-
-    // await toast.promise(
-    //   simulaEspera(),
-    //   { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
-    // );
 
   }
 
@@ -85,14 +71,7 @@ export default function Login() {
           onChange={handleChange}
         />
       </div>
-      <Button
-        type="submit"
-        className={`
-          bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase
-        `}
-      >
-        Continuar
-      </Button>
+      <AppButton isLoading={loading} />
     </form>
   )
 }

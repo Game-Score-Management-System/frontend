@@ -25,7 +25,7 @@ export default function Register() {
       { loading: 'Registrando...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
     );
 
-    router.push('/dashboard');
+    router.push('/dashboard/leaderboard');
   }
 
   const { values, errors, validForm, handleSubmit, handleChange } = useForm(

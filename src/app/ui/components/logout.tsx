@@ -9,6 +9,8 @@ import useAppSession from "@hooks/useSession";
 export default function Logout() {
   const { session } = useAppSession();
 
+  console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', session);
+
   return (
     <Dropdown placement="bottom-start">
       <DropdownTrigger>
@@ -16,7 +18,7 @@ export default function Logout() {
           as="button"
           avatarProps={{
             isBordered: true,
-            src: session?.user?.profilePicture ?? "https://robohash.org/random2",
+            src: session?.user?.proflePicture ?? "https://robohash.org/random2",
           }}
           className="transition-transform"
           description={

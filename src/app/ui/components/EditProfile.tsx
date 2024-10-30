@@ -1,7 +1,7 @@
 'use client';
 import { inputWrapperClasses } from "@/app/lib/utils";
 import { CameraIcon, UserCircleIcon, UserIcon } from "@heroicons/react/24/outline";
-import { Button, Chip, Image, Input } from "@nextui-org/react";
+import { Chip, Image, Input } from "@nextui-org/react";
 import useForm from "@hooks/useForm";
 import { UserEditable } from "@models/User.model";
 import { EditableProfileForm } from "@schemas/editableProfileForm.schema";
@@ -11,12 +11,10 @@ import { User } from "@models/User.model";
 import supabase from "@/config/supabase";
 import { MAX_IMAGE_PROFILE_SIZE, AVATARS_BUCKET_NAME } from "@/app/lib/constants";
 import useAppSession from "@hooks/useSession";
+import AppButton from "./AppButton";
+import { useSession } from "next-auth/react";
 
-export default function EditProfile() {
-
-  const { session } = useAppSession();
-  const user = session?.user as User;
-  console.log({ user });
+export default function EditProfile({ user }: { user: User }) {
 
 
   const onSubmit = () => {
@@ -25,15 +23,15 @@ export default function EditProfile() {
   };
 
   const { values, validForm, errors, handleChange, handleSubmit } = useForm<UserEditable>({
-    lastname: user.lastname,
-    name: user.name,
-    profilePicture: user.profilePicture,
-    username: user.username
+    lastname: user?.lastname,
+    name: user?.name,
+    profilePicture: user?.profilePicture,
+    username: user?.username
   }, EditableProfileForm, onSubmit);
 
   const imageInputRef = useRef<HTMLInputElement>(null);
   const [imageSrc, setImageSrc] = useState<{ url: string, loading: boolean }>({
-    url: user.profilePicture,
+    url: user?.profilePicture,
     loading: false
   });
 
@@ -88,7 +86,7 @@ export default function EditProfile() {
             </span>
           </div>
         </div>
-        <Chip variant="dot" color="success" className="text-xl backdrop-blur-3xl">{user.username}</Chip>
+        <Chip variant="dot" color="success" className="text-xl backdrop-blur-3xl">{user?.username}</Chip>
         <form className="flex justify-start w-full  flex-col gap-5 backdrop-blur-3xl backdrop-brightness-110 py-7 px-10 rounded-xl" onSubmit={handleSubmit}>
           <div className="grid md:grid-cols-2 gap-4 w-full mb-6 md:mb-0">
             <Input
@@ -132,12 +130,7 @@ export default function EditProfile() {
             errorMessage={errors.username}
           />
 
-          <Button
-            type="submit"
-            className={`bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase`}
-          >
-            Guardar Cambios
-          </Button>
+          <AppButton isLoading={false} />
         </form>
       </div>
 

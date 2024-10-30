@@ -1,11 +1,13 @@
-import NextAuth from 'next-auth';
+import NextAuth, { User, Session } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Github from 'next-auth/providers/github';
-import { authConfig } from './auth.config';
-import { User } from '@/app/ui/models/User.model';
+import { postDataApi } from '@/app/lib/utils';
+import { JWT } from 'next-auth/jwt';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  ...authConfig,
+  pages: {
+    signIn: '/login'
+  },
   providers: [
     Credentials({
       name: 'Credentials',
@@ -14,23 +16,13 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         password: { label: 'Password', type: 'password' }
       },
       async authorize(credentials) {
-        console.log('credentials 👍', credentials);
         const { email, password } = credentials as { email: string; password: string };
-        const response = await fetch('http://localhost:8080/api/v1/auth/login', {
-          method: 'POST',
-          body: JSON.stringify({ email, password }),
-          headers: {
-            'Content-Type': 'application/json'
-          }
-        });
-        const resData = (await response.json()) as { result: User };
-
-        console.log('resData', resData);
-
-        if (response.ok && resData) {
-          return resData.result;
-        } else {
-          console.error('Authorization failed:', resData);
+        try {
+          const response = await postDataApi('auth/login', { email, password });
+          const resData = response.result;
+          return resData;
+        } catch (error) {
+          console.error('🔍🔍🔍🔍🔍🔍🔍Error Credentials.authorize', error);
           return null;
         }
       }
@@ -52,15 +44,19 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       });
       return true;
     },
-    async jwt({ token, user }: { token: any; user: any }) {
-      // Almacena el token de usuario y rol en el JWT para usarlos en la sesión
+    async jwt({ token, user }: { token: JWT; user: User }) {
+      console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', token);
+      console.log('☀️☀️☀️☀️☀️☀️☀️☀️☀️', user); // Almacena el token de usuario y rol en el JWT para usarlos en la sesión
       if (user) {
-        token.user = { ...token, ...user };
+        token.user = { ...user };
       }
       return token;
     },
-    async session({ session, token }: { session: any; token: any }) {
-      session.user = { ...session.user, ...token.user };
+    async session({ session, token }: { session: Session; token: JWT }) {
+      console.log('🔒🔒🔒🔒🔒🔒🔒', session);
+      console.log('🤑🤑🤑🤑🤑🤑🤑🤑', token);
+      // session.user.session.user = { ...session.user, ...token.user };
+      session.user = { ...token.user };
       return session;
     }
   }
