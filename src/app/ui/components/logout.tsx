@@ -1,15 +1,17 @@
 'use client';
 
-import { cerrarSesion } from "@/app/lib/actions";
+import { cerrarSesion } from "@/app/lib/actions/actions";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownTrigger, User, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import useAppSession from "@hooks/useSession";
 
 
 export default function Logout() {
-  const { session } = useAppSession();
+  const { session, status } = useAppSession();
 
   console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', session);
+
+  if (status === 'loading') return null;
 
   return (
     <Dropdown placement="bottom-start">
@@ -18,7 +20,7 @@ export default function Logout() {
           as="button"
           avatarProps={{
             isBordered: true,
-            src: session?.user?.proflePicture ?? "https://robohash.org/random2",
+            src: session?.user?.profilePicture,
           }}
           className="transition-transform"
           description={
@@ -27,7 +29,11 @@ export default function Logout() {
               {session?.user?.username}
             </p>
           }
-          name={`${session?.user?.name} ${session?.user?.lastname}`}
+          name={
+            <p className="overflow-hidden text-ellipsis w-40 whitespace-nowrap text-start">
+              {session?.user?.name} {session?.user?.lastname}
+            </p>
+          }
         />
       </DropdownTrigger>
       <DropdownMenu aria-label="User Actions" variant="shadow">

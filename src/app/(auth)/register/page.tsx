@@ -1,35 +1,51 @@
 'use client';
 import toast from "react-hot-toast";
-import { Input, Button } from "@nextui-org/react";
+import { Input } from "@nextui-org/react";
 import { RegisterFormValidationSchema } from "@/app/ui/schemas/registerForm.schema";
 import { useState } from "react";
 import useForm from "@/app/ui/hooks/useForm";
 import { useRouter } from 'next/navigation';
 import { EnvelopeIcon, EyeIcon, EyeSlashIcon, LockClosedIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { inputWrapperClasses } from "@lib/utils";
+import AppButton from "@/app/ui/components/AppButton";
+import { iniciarSesion, registrar } from "@/app/lib/actions/actions";
 
 
 export default function Register() {
   const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
 
   const onRegister = async () => {
-
-    const simulaEspera = async () => {
-      return await new Promise((resolve) => {
-        setTimeout(resolve, 1000);
-      });
+    const user = {
+      email: values.email,
+      name: values.name,
+      lastname: values.lastname,
+      password: values.password,
     }
 
-    await toast.promise(
-      simulaEspera(),
-      { loading: 'Registrando...', success: () => <b>¡Bienvenido!</b>, error: () => <b>¡Error al iniciar sesión!</b> }
-    );
+    const promiseRegister = async () => {
+      await registrar('credential', user);
+      await iniciarSesion('credential', { email: user.email, password: user.password });
+    }
 
-    router.push('/dashboard/leaderboard');
+    try {
+      setLoading(true);
+      await toast.promise(
+        promiseRegister(),
+        { loading: 'Registrando...', success: () => <b>¡Bienvenido!</b>, error: (e) => <b>{e.message}</b> }
+      );
+      router.push('/dashboard/leaderboard');
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setLoading(false);
+    }
+
   }
 
-  const { values, errors, validForm, handleSubmit, handleChange } = useForm(
-    { email: '', name: '', lastname: '', password: '', confirmPassword: '' },
+  const { values, errors, handleSubmit, handleChange } = useForm(
+    { email: 'juang20133@gmail.com', name: 'Juan', lastname: 'Romero', password: '12345678', confirmPassword: '12345678' },
     RegisterFormValidationSchema,
     onRegister
   )
@@ -139,15 +155,7 @@ export default function Register() {
         />
 
       </div>
-      <Button
-        type="submit"
-        className={`
-          ${validForm === false && 'cursor-not-allowed'} 
-          bg-gradient-to-t from-[#1b56f0] to-[#457aff] text-white font-bold rounded-xl md:p-4 md:py-7 p-3 w-full text-sm md:text-lg hover:scale-105 transition duration-200 ease-in-out uppercase
-        `}
-      >
-        Continuar
-      </Button>
+      <AppButton isLoading={loading} />
     </form>
   )
 }

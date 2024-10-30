@@ -1,8 +1,9 @@
-import NextAuth, { User, Session } from 'next-auth';
+import NextAuth, { User, Session, Account, Profile } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Github from 'next-auth/providers/github';
-import { postDataApi } from '@/app/lib/utils';
+import { postDataApi } from '@lib/actions/http';
 import { JWT } from 'next-auth/jwt';
+import { AdapterUser } from 'next-auth/adapters';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
@@ -44,7 +45,25 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       });
       return true;
     },
-    async jwt({ token, user }: { token: JWT; user: User }) {
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      isNewUser
+    }: {
+      token: JWT;
+      user: User | AdapterUser;
+      account: Account | null;
+      profile?: Profile;
+      isNewUser?: boolean;
+      trigger?: 'signIn' | 'signUp' | 'update';
+      session?: Session;
+    }) {
+      console.log('+++ACOUNT+++', account);
+      console.log('+++PROFILE+++', profile);
+      console.log('+++USER+++', isNewUser);
+
       console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', token);
       console.log('☀️☀️☀️☀️☀️☀️☀️☀️☀️', user); // Almacena el token de usuario y rol en el JWT para usarlos en la sesión
       if (user) {

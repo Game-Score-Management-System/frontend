@@ -1,7 +1,7 @@
 import { Button } from "@nextui-org/react";
 import { GithubIcon } from "@icons/GithubIcon";
 import { GoogleIcon } from "@icons/GoogleIcon";
-import { iniciarSesion } from "@lib/actions"
+import { iniciarSesion } from "@/app/lib/actions/actions"
 
 export default function SignersFooter() {
   return (

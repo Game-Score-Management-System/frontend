@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { LoginFormValidationSchema } from "@schemas/loginForm.schema";
 import { EnvelopeIcon, LockClosedIcon } from "@heroicons/react/24/outline";
 import { Input } from "@nextui-org/react";
-import { iniciarSesion } from "@/app/lib/actions";
+import { iniciarSesion } from "@/app/lib/actions/actions";
 import toast from "react-hot-toast";
 import AppButton from "@/app/ui/components/AppButton";
 import { useState } from "react";
