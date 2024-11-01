@@ -23,8 +23,8 @@ const statusColorMap: { [key: string]: "success" | "default" | "primary" | "seco
   Inactivo: "danger",
 };
 
-export default function UserList() {
-  const { data: users = [], isLoading } = useGetAllUsersQuery();
+export default function UserList({ users }: { users: User[] }) {
+  // const { data: users = [], isLoading } = useGetAllUsersQuery();
   const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<User>(users, 5);
   // const [users, setUsers] = useState<User[]>([]);
   // const [rowsPerPage, setRowsPerPage] = useState(5);
@@ -120,7 +120,7 @@ export default function UserList() {
       columns={columns}
       footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
       header={<Search placeholder="Buscar por nombre..." />}
-      isLoading={isLoading}
+      isLoading={false}
       items={itemsToShowInTable}
       renderCell={renderCell}
     />

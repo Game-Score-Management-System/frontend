@@ -76,7 +76,12 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
       console.log('🤑🤑🤑🤑🤑🤑🤑🤑', token);
       // session.user.session.user = { ...session.user, ...token.user };
       session.user = { ...token.user };
+      session.accessToken = token.user.token;
       return session;
     }
+  },
+  session: {
+    strategy: 'jwt',
+    maxAge: 3600
   }
 });
