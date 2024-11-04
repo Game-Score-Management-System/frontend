@@ -3,7 +3,7 @@ import { Key, useCallback } from "react";
 import { User as UserNextUi, Chip, Tooltip, Switch } from "@nextui-org/react";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "@lib/utils";
-import { useGetAllUsersQuery } from "@store/services/apiSlice";
+import { useGetAllUsersQuery, useToggleUserStatusMutation } from "@store/services/apiSlice";
 import type { User } from "@models/User.model";
 import AdminTable from "@components/AdminTable";
 import TablePaginator from "@components/TablePaginator";
@@ -23,21 +23,19 @@ const statusColorMap: { [key: string]: "success" | "default" | "primary" | "seco
   Inactivo: "danger",
 };
 
-export default function UserList({ users }: { users: User[] }) {
-  // const { data: users = [], isLoading } = useGetAllUsersQuery();
+export default function UserList() {
+  const { data: users = [], isLoading, refetch } = useGetAllUsersQuery({ limit: 10, page: 1 });
+  // useToggleUserStatusMutation
+  const [toggleUserStatus] = useToggleUserStatusMutation();
+
+
   const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<User>(users, 5);
   // const [users, setUsers] = useState<User[]>([]);
   // const [rowsPerPage, setRowsPerPage] = useState(5);
 
-  const handleUserStatusChange = useCallback((userId: string) => {
-    console.log('cambiando estado del usuario', userId);
-    // setUsers(users.map(user => {
-    //   if (user.id === userId) {
-    //     return { ...user, status: !user.status };
-    //   }
-    //   return user;
-    // }));
-  }, []);
+  const handleUserStatusChange = useCallback((userId: string, status: boolean) => {
+    toggleUserStatus({ id: userId, status }).unwrap().then(() => refetch());
+  }, [toggleUserStatus, refetch]);
 
   const renderCell = useCallback((user: User, columnKey: Key) => {
     const { name, lastname, email, role, status, id, createdAt } = user;
@@ -76,7 +74,7 @@ export default function UserList({ users }: { users: User[] }) {
           </Tooltip>
           <Tooltip content={status ? "Desactivar usuario" : "Activar usuario"} color={status ? "danger" : "success"}>
             <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
-              <Switch defaultSelected={status} size="sm" aria-label="Automatic updates" color="primary" onChange={() => handleUserStatusChange(id)} />
+              <Switch defaultSelected={status} size="sm" aria-label="Automatic updates" color="primary" onChange={() => handleUserStatusChange(id, !status)} />
             </span>
           </Tooltip>
         </div>
@@ -120,7 +118,7 @@ export default function UserList({ users }: { users: User[] }) {
       columns={columns}
       footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
       header={<Search placeholder="Buscar por nombre..." />}
-      isLoading={false}
+      isLoading={isLoading}
       items={itemsToShowInTable}
       renderCell={renderCell}
     />

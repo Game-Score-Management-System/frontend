@@ -14,31 +14,36 @@ const routes = [
     name: 'Ranking Global',
     href: '/dashboard/leaderboard',
     icon: GlobeAltIcon,
-    roles: [Role.PLAYER, Role.ADMIN]
+    roles: [Role.PLAYER, Role.ADMIN],
+    isDinamic: false
   },
   {
     name: 'Mis Puntuaciones',
-    href: '/dashboard/scores/3fa85f64-5717-4562-b3fc-2c963f66afa1',
+    href: '/dashboard/scores',
     icon: StarIcon,
-    roles: [Role.PLAYER, Role.ADMIN]
+    roles: [Role.PLAYER, Role.ADMIN],
+    isDinamic: true
   },
   {
     name: 'Perfil',
-    href: '/dashboard/profile/3fa85f64-5717-4562-b3fc-2c963f66afa1',
+    href: '/dashboard/profile',
     icon: UserIcon,
-    roles: [Role.PLAYER, Role.ADMIN]
+    roles: [Role.PLAYER, Role.ADMIN],
+    isDinamic: true
   },
   {
     name: 'Gestión de Jugadores',
     href: '/dashboard/admin/players',
     icon: UsersIcon,
-    roles: [Role.ADMIN]
+    roles: [Role.ADMIN],
+    isDinamic: false
   },
   {
     name: 'Gestión de Scores',
     href: '/dashboard/admin/scores',
     icon: DocumentChartBarIcon,
-    roles: [Role.ADMIN]
+    roles: [Role.ADMIN],
+    isDinamic: false
   }
 ] as const;
 

@@ -7,5 +7,6 @@ export interface Score {
   score: number;
   createdAt: Date | string;
   updatedAt: null;
+  deletedAt?: null;
   user: User;
 }

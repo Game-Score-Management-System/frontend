@@ -1,10 +1,22 @@
+"use client";
 import { User } from "@nextui-org/react";
-import { Leaderboard } from "../models/Leaderboard.model";
+import { useGetLeaderboardQuery } from "@/store/services/apiSlice";
 
-export default function RankTable({ columnNames, data }: {
+export default function RankTable({ columnNames }: {
   columnNames: string[],
-  data: Leaderboard[]
 }) {
+
+  const { data, isLoading } = useGetLeaderboardQuery({ limit: 10, page: 1, game: 'Pacman' });
+
+  if (!data || isLoading) {
+    return (
+      <div className="flex justify-center items-center h-96">
+        <div className="animate-spin rounded-full h-32 w-32 border-t-2 border-b-2 border-sky-100"></div>
+      </div>
+    )
+  }
+
+
   return (
     <table className="w-full overflow-hidden table-auto">
       <thead className="text-xs text-white uppercase font-sweater bg-black/60">
@@ -36,10 +48,14 @@ export default function RankTable({ columnNames, data }: {
               <td className="py-2 pl-4 pr-3 text-base whitespace-nowrap sm:pl-6">
                 <div className="flex items-center gap-4 text-sky-100">
                   <User
-
                     avatarProps={{ isBordered: true, src: row.user.profilePicture, className: 'bg-slate-100/20' }}
                     className="transition-transform"
-                    name={row.user.name}
+                    name={
+                      <p className="grid grid-rows-2 items-center ms-1">
+                        {row.user.username}
+                        <span className="text-xs text-slate-300">{row.user.name}</span>
+                      </p>
+                    }
                   />
                 </div>
               </td>

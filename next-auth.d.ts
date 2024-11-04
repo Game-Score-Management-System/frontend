@@ -1,3 +1,4 @@
+import { Role } from '@/app/ui/models/User.model';
 import { DefaultSession, DefaultUser } from 'next-auth';
 import { JWT, DefaultJWT } from 'next-auth/jwt';
 
@@ -10,7 +11,7 @@ declare module 'next-auth' {
       username: string;
       name: string;
       lastname: string;
-      role: string;
+      role: Role;
     } & DefaultSession['user'];
   }
 

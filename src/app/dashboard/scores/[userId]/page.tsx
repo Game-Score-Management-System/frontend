@@ -1,6 +1,8 @@
-import { fetchDataApi } from "@/app/lib/utils";
-import OwnRankingPositionCard from "@/app/ui/components/OwnRankingPositionCard";
-import { Score } from "@/app/ui/models/Score.model";
+// import { fetchDataApi } from "@/app/lib/utils";
+// import OwnRankingPositionCard from "@/app/ui/components/OwnRankingPositionCard";
+// import { Score } from "@/app/ui/models/Score.model";
+import SelectorGame from "@/app/ui/components/SelectorGame";
+import UserScores from "@/app/ui/components/UserScores";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -9,26 +11,17 @@ export const metadata: Metadata = {
 
 
 export default async function ScoresPage({ params }: { params: { userId: string } }) {
-  const data = await fetchDataApi('users/scores/' + params.userId) as Score[];
-  console.log(data);
+  // const data = await fetchDataApi('users/scores/' + params.userId) as Score[];
+  // console.log(data);
   return (
     <>
       <h2 className="text-2xl md:text-4xl font-bold text-center text-slate-100">
         Mis Puntuaciones 🎯
       </h2>
-      <section className="grid  gap-5">
-        {
-          data.map(({ id, score, user, game }) => {
-            return <OwnRankingPositionCard
-              key={id}
-              title={`Tus resultados en ${game}`}
-              profilePicture={user.profilePicture}
-              score={score}
-              username={user.username}
-            />
-          })
-        }
-      </section>
+
+      <SelectorGame />
+      <UserScores userId={params.userId}></UserScores>
+
     </>
   );
 }

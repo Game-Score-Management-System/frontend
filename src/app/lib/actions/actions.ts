@@ -1,6 +1,6 @@
 // import { signIn, signOut } from '@auth';
 
-import { signIn, signOut } from 'next-auth/react';
+import { getSession, signIn, signOut } from 'next-auth/react';
 import { postDataApi } from '@lib/actions/http';
 import { Providers } from '@models/Providers.model';
 
@@ -24,6 +24,9 @@ export async function iniciarSesion(
         console.log('result.error', result);
         throw new Error(result.error);
       }
+
+      const session = await getSession();
+      return session?.user.token;
 
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (error) {

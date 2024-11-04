@@ -63,5 +63,6 @@ export default function useForm<T>(initialValues: T, validationSchema: AnySchema
     validForm,
     handleChange,
     handleSubmit,
+    setValues
   };
 }

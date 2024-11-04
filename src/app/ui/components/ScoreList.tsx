@@ -1,6 +1,6 @@
 'use client';
 import { Key, useCallback } from "react";
-import { Tooltip, User } from "@nextui-org/react";
+import { Chip, Tooltip, User } from "@nextui-org/react";
 import { PencilIcon, TrashIcon } from "@heroicons/react/20/solid";
 import { Score } from "@models/Score.model";
 import { formatDate } from "@lib/utils";
@@ -15,12 +15,13 @@ const columns = [
   { name: "Juego", uid: "game" },
   { name: "Puntuación", uid: "score" },
   { name: "Fecha de Creación", uid: "createdAt" },
+  { name: "Estado", uid: "status" },
   { name: 'Acciones', uid: 'actions' }
 ];
 
 
 export default function ScoreList() {
-  const { data: scores = [], refetch, isLoading } = useGetScoresQuery();
+  const { data: scores = [], refetch, isLoading } = useGetScoresQuery({ limit: 10, page: 1 });
   const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<Score>(scores, 5);
 
 
@@ -28,12 +29,11 @@ export default function ScoreList() {
 
   const handleDelete = useCallback((scoreId: Score['id']) => {
     deleteScore(scoreId)
-    console.log(scores);
     refetch();
-  }, [deleteScore, refetch, scores]);
+  }, [deleteScore, refetch]);
 
   const renderCell = useCallback((score: Score, columnKey: Key) => {
-    const { game, score: scoreUser, user, createdAt } = score;
+    const { game, score: scoreUser, user, createdAt, deletedAt } = score;
 
     const cellContent: Record<string, JSX.Element> = {
       name: (
@@ -60,6 +60,18 @@ export default function ScoreList() {
           <p className="text-xs capitalize">{formatDate(createdAt)}</p>
         </div>
       ),
+      status: (
+        <div className="flex flex-col">
+          {
+            deletedAt == null ?
+              <Chip color="success">Activo</Chip> :
+              <Tooltip color="foreground" className="capitalize" content={formatDate(deletedAt)} placement='bottom'>
+                <Chip color="danger">Eliminado</Chip>
+              </Tooltip>
+          }
+        </div>
+      ),
+
       actions: (
         <div className="relative flex items-center gap-2">
           <Tooltip content="Edit user">
@@ -67,11 +79,15 @@ export default function ScoreList() {
               <PencilIcon width={20} height={20} />
             </span>
           </Tooltip>
-          <Tooltip color="danger" content="Delete user">
-            <span className="text-lg text-danger cursor-pointer active:opacity-50" onClick={() => handleDelete(score.id)}>
-              <TrashIcon width={20} height={20} />
-            </span>
-          </Tooltip>
+          {
+            deletedAt == null && (
+              <Tooltip color="danger" content="Eliminar puntuación">
+                <span className="text-lg text-danger cursor-pointer active:opacity-50" onClick={() => handleDelete(score.id)}>
+                  <TrashIcon width={20} height={20} />
+                </span>
+              </Tooltip>
+            )
+          }
         </div>
       )
     };

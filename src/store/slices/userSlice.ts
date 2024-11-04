@@ -1,8 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const INITIAL_STATE = {
-  email: '',
-  token: ''
+  token: null
 };
 
 export const userSlice = createSlice({
@@ -10,14 +9,11 @@ export const userSlice = createSlice({
   initialState: INITIAL_STATE,
   reducers: {
     login: (state, action) => {
-      state.email = action.payload.email;
+      console.log('action', action);
       state.token = action.payload.token;
-      sessionStorage.setItem('token', action.payload.token);
     },
     logout: (state) => {
-      state.email = '';
-      state.token = '';
-      sessionStorage.removeItem('token');
+      state.token = null;
     }
   }
 });

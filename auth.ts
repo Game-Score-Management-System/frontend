@@ -1,9 +1,9 @@
-import NextAuth, { User, Session, Account, Profile } from 'next-auth';
+import NextAuth, { Session } from 'next-auth';
 import Credentials from 'next-auth/providers/credentials';
 import Github from 'next-auth/providers/github';
 import { postDataApi } from '@lib/actions/http';
 import { JWT } from 'next-auth/jwt';
-import { AdapterUser } from 'next-auth/adapters';
+// import { AdapterUser } from 'next-auth/adapters';
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
   pages: {
@@ -34,46 +34,16 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     })
   ],
   callbacks: {
-    async signIn({ user, account, credentials, email, profile }) {
-      console.log('🟠🟠🟠🟠🟠🟠🟠🟠🟠🟠🟠🟠');
-      console.log({
-        user,
-        account,
-        credentials,
-        email,
-        profile
-      });
-      return true;
-    },
-    async jwt({
-      token,
-      user,
-      account,
-      profile,
-      isNewUser
-    }: {
-      token: JWT;
-      user: User | AdapterUser;
-      account: Account | null;
-      profile?: Profile;
-      isNewUser?: boolean;
-      trigger?: 'signIn' | 'signUp' | 'update';
-      session?: Session;
-    }) {
-      console.log('+++ACOUNT+++', account);
-      console.log('+++PROFILE+++', profile);
-      console.log('+++USER+++', isNewUser);
-
-      console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', token);
-      console.log('☀️☀️☀️☀️☀️☀️☀️☀️☀️', user); // Almacena el token de usuario y rol en el JWT para usarlos en la sesión
+    // async signIn({ user, account, credentials, email, profile }) {
+    //   return true;
+    // },
+    async jwt({ token, user }) {
       if (user) {
         token.user = { ...user };
       }
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {
-      console.log('🔒🔒🔒🔒🔒🔒🔒', session);
-      console.log('🤑🤑🤑🤑🤑🤑🤑🤑', token);
       // session.user.session.user = { ...session.user, ...token.user };
       session.user = { ...token.user };
       session.accessToken = token.user.token;
@@ -82,6 +52,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   },
   session: {
     strategy: 'jwt',
-    maxAge: 3600
+    maxAge: 60 * 60 // 1 hour
   }
 });

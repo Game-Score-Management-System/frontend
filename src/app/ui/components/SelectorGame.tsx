@@ -1,8 +1,10 @@
 'use client'
 
 import { Select, SelectItem } from "@nextui-org/react"
+import { useAppSelector } from "../hooks/useStore";
 
 export default function SelectorGame() {
+  const selectedGame = useAppSelector(state => state.game.selectedGame);
 
   return (
     <header className="w-full">
@@ -10,14 +12,11 @@ export default function SelectorGame() {
         variant="bordered"
         label="Selecciona un juego"
         className="w-full "
-        defaultSelectedKeys={['tetris']}
-
+        defaultSelectedKeys={[selectedGame]}
+        isDisabled
       >
-        <SelectItem key='tetris'>
-          Tetris
-        </SelectItem>
-        <SelectItem key='pacman'>
-          Pacman
+        <SelectItem key={selectedGame}>
+          {selectedGame}
         </SelectItem>
 
       </Select>

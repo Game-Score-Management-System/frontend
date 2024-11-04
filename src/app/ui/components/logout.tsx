@@ -4,14 +4,20 @@ import { cerrarSesion } from "@/app/lib/actions/actions";
 import { ArrowLeftEndOnRectangleIcon } from "@heroicons/react/24/outline";
 import { Dropdown, DropdownTrigger, User, DropdownMenu, DropdownItem } from "@nextui-org/react";
 import useAppSession from "@hooks/useSession";
+import { useAppDispatch } from "../hooks/useStore";
+import { logout } from "@/store/slices/userSlice";
 
 
 export default function Logout() {
   const { session, status } = useAppSession();
-
-  console.log('🔴🔴🔴🔴🔴🔴🔴🔴🔴', session);
+  const dispatch = useAppDispatch();
 
   if (status === 'loading') return null;
+
+  const handleLogout = async () => {
+    dispatch(logout());
+    await cerrarSesion();
+  }
 
   return (
     <Dropdown placement="bottom-start">
@@ -46,7 +52,7 @@ export default function Logout() {
           </p>
         </DropdownItem>
         <DropdownItem key="logout" color="danger">
-          <div className="flex items-center gap-2" onClick={() => cerrarSesion()}>
+          <div className="flex items-center gap-2" onClick={() => handleLogout()}>
             <ArrowLeftEndOnRectangleIcon className="size-5" />
             Cerar Sesion
           </div>

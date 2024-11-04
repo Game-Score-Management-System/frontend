@@ -1,37 +1,70 @@
 'use client';
-import { inputWrapperClasses } from "@/app/lib/utils";
 import { CameraIcon, UserCircleIcon, UserIcon } from "@heroicons/react/24/outline";
 import { Chip, Image, Input } from "@nextui-org/react";
-import useForm from "@hooks/useForm";
-import { UserEditable } from "@models/User.model";
 import { EditableProfileForm } from "@schemas/editableProfileForm.schema";
-import { useRef, useState } from "react";
-import toast from "react-hot-toast";
-import { User } from "@models/User.model";
-import supabase from "@/config/supabase";
+import { inputWrapperClasses } from "@/app/lib/utils";
 import { MAX_IMAGE_PROFILE_SIZE, AVATARS_BUCKET_NAME } from "@/app/lib/constants";
-import useAppSession from "@hooks/useSession";
+import { UserEditable } from "@models/User.model";
+import { useEffect, useRef, useState } from "react";
 import AppButton from "./AppButton";
-import { useSession } from "next-auth/react";
+import supabase from "@/config/supabase";
+import toast from "react-hot-toast";
+import useForm from "@hooks/useForm";
+import { useGetUserProfileQuery, useUpdateProfileMutation } from "@/store/services/apiSlice";
 
-export default function EditProfile({ user }: { user: User }) {
+export default function EditProfile({ userId }: { userId: string }) {
+  const { data: user, isLoading } = useGetUserProfileQuery(userId);
+  const [updateProfile, { isLoading: isLoadingUpdate }] = useUpdateProfileMutation();
 
-
-  const onSubmit = () => {
+  const onSubmit = async () => {
     console.log("Valido", validForm);
     console.log('Enviando datos', values);
+
+    if (!validForm) return;
+
+    const justChangedValues = Object.keys(values).reduce((acc, key) => {
+      const keyOfUser = key as keyof UserEditable;
+
+      if (values[keyOfUser] !== user?.[keyOfUser]) {
+        acc[keyOfUser] = values[keyOfUser];
+      }
+      return acc;
+    }, {} as UserEditable);
+
+    try {
+      await updateProfile({ id: user?.id, ...justChangedValues }).unwrap()
+      toast.success('Perfil actualizado correctamente!');
+    } catch (error: any) {
+      if (error?.data.message) {
+        toast.error(error?.data.message);
+      }
+    }
   };
 
-  const { values, validForm, errors, handleChange, handleSubmit } = useForm<UserEditable>({
+
+  const { values, validForm, errors, handleChange, handleSubmit, setValues } = useForm<UserEditable>({
     lastname: user?.lastname,
     name: user?.name,
     profilePicture: user?.profilePicture,
     username: user?.username
   }, EditableProfileForm, onSubmit);
 
+  useEffect(() => {
+    if (user) {
+      setValues({
+        lastname: user.lastname,
+        name: user.name,
+        profilePicture: user.profilePicture,
+        username: user.username
+      });
+      setImageSrc({ url: user.profilePicture, loading: false });
+    }
+  }, [user, setValues]);
+
   const imageInputRef = useRef<HTMLInputElement>(null);
+
   const [imageSrc, setImageSrc] = useState<{ url: string, loading: boolean }>({
-    url: user?.profilePicture,
+    url: user?.profilePicture ?? '',
     loading: false
   });
 
@@ -60,6 +93,7 @@ export default function EditProfile({ user }: { user: User }) {
     setImageSrc({ url: publicUrl, loading: false });
 
     // Actualizar solo la imagen en la base de datos
+    await updateProfile({ id: userId, profilePicture: publicUrl }).unwrap();
 
     toast.success('Imagen actualizada correctamente!');
   };
@@ -130,7 +164,7 @@ export default function EditProfile({ user }: { user: User }) {
             errorMessage={errors.username}
           />
 
-          <AppButton isLoading={false} />
+          <AppButton isLoading={isLoading || isLoadingUpdate} />
         </form>
       </div>
 

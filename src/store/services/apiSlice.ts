@@ -1,17 +1,38 @@
+import { Leaderboard } from '@/app/ui/models/Leaderboard.model';
 import { Score } from '@models/Score.model';
 import { User } from '@models/User.model';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
-console.log(API_URL);
+interface ApiResponse<T> {
+  success: boolean;
+  statusCode: number;
+  metadata: {
+    page: number;
+    limit: number;
+    totalItems: number;
+    totalPages: number;
+  };
+  result: T;
+}
 
 export const apiSlice = createApi({
   reducerPath: 'api',
-  baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
+  baseQuery: fetchBaseQuery({
+    baseUrl: API_URL,
+    prepareHeaders: async (headers, { getState }) => {
+      const state = getState() as { users: { token: string } };
+      const token = state.users.token;
+      if (!token) return headers;
+      headers.set('authorization', `Bearer ${token}`);
+      return headers;
+    }
+  }),
   endpoints: (builder) => ({
-    getScores: builder.query<Score[], void>({
-      query: () => 'scores'
+    getScores: builder.query<Score[], { page: number; limit: number }>({
+      query: ({ page, limit }) => `scores?page=${page}&limit=${limit}&showDeleted=1`,
+      transformResponse: (response: ApiResponse<Score[]>) => response.result
     }),
     deleteScore: builder.mutation<void, string>({
       query: (id) => ({
@@ -26,8 +47,9 @@ export const apiSlice = createApi({
         body
       })
     }),
-    getAllUsers: builder.query<User[], void>({
-      query: () => 'users/admin'
+    getAllUsers: builder.query<User[], { page: number; limit: number }>({
+      query: ({ page, limit }) => `users/admin/?page=${page}&limit=${limit}`,
+      transformResponse: (response: ApiResponse<User[]>) => response.result
     }),
     updateUser: builder.mutation<User, Partial<User>>({
       query: (body) => ({
@@ -37,7 +59,30 @@ export const apiSlice = createApi({
       })
     }),
     getUserProfile: builder.query<User, string>({
-      query: (id) => `users/profile/${id}`
+      query: (id) => `users/profile/${id}`,
+      transformResponse: (response: ApiResponse<User>) => response.result
+    }),
+    getLeaderboard: builder.query<Leaderboard[], { page: number; limit: number; game: string }>({
+      query: ({ page, limit, game }) => `scores/leaderboard/${game}?page=${page}&limit=${limit}`,
+      transformResponse: (response: ApiResponse<Leaderboard[]>) => response.result
+    }),
+    getScoresByIdUser: builder.query<Score[], { page: number; limit: number; id: string }>({
+      query: ({ page, limit, id }) => `users/scores/${id}?page=${page}&limit=${limit}`,
+      transformResponse: (response: ApiResponse<Score[]>) => response.result
+    }),
+    updateProfile: builder.mutation<User, Partial<User>>({
+      query: (body: Partial<User>) => ({
+        url: `users/profile/${body.id}`,
+        method: 'PATCH',
+        body: { ...body, id: undefined }
+      })
+    }),
+    toggleUserStatus: builder.mutation<User, { id: string; status: boolean }>({
+      query: ({ id, status }) => ({
+        url: `users/admin/${id}`,
+        method: 'PATCH',
+        body: { status }
+      })
     })
   })
 });
@@ -47,5 +92,9 @@ export const {
   useDeleteScoreMutation,
   useCreateNewScoreMutation,
   useGetAllUsersQuery,
-  useGetUserProfileQuery
+  useGetUserProfileQuery,
+  useGetLeaderboardQuery,
+  useUpdateProfileMutation,
+  useGetScoresByIdUserQuery,
+  useToggleUserStatusMutation
 } = apiSlice;

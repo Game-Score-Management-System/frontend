@@ -9,32 +9,35 @@ import { iniciarSesion } from "@/app/lib/actions/actions";
 import toast from "react-hot-toast";
 import AppButton from "@/app/ui/components/AppButton";
 import { useState } from "react";
+import { useAppDispatch } from "@/app/ui/hooks/useStore";
+import { login } from "@/store/slices/userSlice";
 
 
 export default function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  // const dispatch = useAppDispatch();
+  const dispatch = useAppDispatch();
 
   const onLogin = async () => {
     try {
       setLoading(true);
-      await toast.promise(
+      const tokenLogin = await toast.promise(
         iniciarSesion('credential', values),
         { loading: 'Iniciando sesión...', success: () => <b>¡Bienvenido!</b>, error: (e) => <b>{e.message}</b> }
       )
+
+      dispatch(login({ token: tokenLogin }));
+
       router.push('/dashboard/leaderboard');
     } catch (error) {
       console.log('error', error);
     } finally {
       setLoading(false);
     }
-
-
   }
 
   const { values, errors, handleSubmit, handleChange } = useForm(
-    { email: 'fake@gmail.com', password: 'admin12345' },
+    { email: 'juang20133@gmail.com', password: '12345678' },
     LoginFormValidationSchema,
     onLogin
   )
