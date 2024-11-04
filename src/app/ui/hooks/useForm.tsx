@@ -7,7 +7,7 @@ export default function useForm<T>(initialValues: T, validationSchema: AnySchema
   const [errors, setErrors] = useState<Partial<Record<keyof T, string>>>({});
   const [validForm, setValidForm] = useState(false);
 
-  const handleChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleChange = async (e: React.ChangeEvent<HTMLInputElement> | React.ChangeEvent<HTMLSelectElement>) => {
     const { name, value } = e.target;
 
     if (!name) throw new Error("Se debe agregar el atributo name en el input");

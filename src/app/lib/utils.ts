@@ -19,6 +19,17 @@ export const formatDate = (date: Date | string) => {
   });
 };
 
+export const formatDateTime = (date: Date | string) => {
+  return new Date(date).toLocaleDateString('es-ES', {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: true
+  });
+};
+
 export const inputWrapperClasses = [
   'shadow-xl',
   'bg-default-200/50',

@@ -9,11 +9,14 @@ import { EnvelopeIcon, EyeIcon, EyeSlashIcon, LockClosedIcon, UserCircleIcon } f
 import { inputWrapperClasses } from "@lib/utils";
 import AppButton from "@/app/ui/components/AppButton";
 import { iniciarSesion, registrar } from "@/app/lib/actions/actions";
+import { useAppDispatch } from "@/app/ui/hooks/useStore";
+import { login } from "@/store/slices/userSlice";
 
 
 export default function Register() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const dispatch = useAppDispatch();
 
 
   const onRegister = async () => {
@@ -26,7 +29,9 @@ export default function Register() {
 
     const promiseRegister = async () => {
       await registrar('credential', user);
-      await iniciarSesion('credential', { email: user.email, password: user.password });
+      const tokenLogin = await iniciarSesion('credential', { email: user.email, password: user.password });
+      dispatch(login({ token: tokenLogin }));
+
     }
 
     try {
@@ -45,7 +50,7 @@ export default function Register() {
   }
 
   const { values, errors, handleSubmit, handleChange } = useForm(
-    { email: 'juang20133@gmail.com', name: 'Juan', lastname: 'Romero', password: '12345678', confirmPassword: '12345678' },
+    { email: '', name: '', lastname: '', password: '', confirmPassword: '' },
     RegisterFormValidationSchema,
     onRegister
   )

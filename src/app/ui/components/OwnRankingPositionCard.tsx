@@ -1,11 +1,24 @@
+import { formatDateTime } from "@/app/lib/utils";
 import { Image } from "@nextui-org/react";
 
-export default function OwnRankingPositionCard({ title, profilePicture, username, score, position }: { title?: string, profilePicture?: string, username?: string, score?: number, position?: number }) {
+interface OwnRankingPositionCardProps {
+  title?: string;
+  profilePicture?: string;
+  username?: string;
+  score?: number;
+  position?: number;
+  scoreDate: string | Date;
+}
+
+export default function OwnRankingPositionCard({ title, profilePicture, username, score, position, scoreDate }: OwnRankingPositionCardProps) {
   return (
-    <div className=" relative flex flex-col md:flex-row gap-6 md:gap-20 items-center justify-between p-6 md:p-12 pb-8 overflow-hidden transition-all border-3 rounded-lg border-white/80 bg-black/80 group-hover:border-white w-full">
+    <div className="relative flex flex-col md:flex-row gap-6 md:gap-20 items-center justify-between p-6 md:p-12 pb-8 overflow-hidden transition-all border-3 rounded-lg border-white/80 bg-black/80 group-hover:border-white w-full">
       <div className="absolute z-10 w-16 h-16 md:w-24 md:h-24 bg-green-500 rounded-full blur-3xl"></div>
       <div className="absolute bottom-0 right-0 z-10 w-16 h-16 md:w-24 md:h-24 bg-cyan-300 rounded-full opacity-50 blur-3xl"></div>
       <small className="absolute left-0 right-0 block w-full font-bold text-center uppercase top-2">{title}</small>
+      <small className="absolute left-0 right-0 block w-full  text-center  bottom-2 text-xs opacity-50">
+        {formatDateTime(scoreDate)}
+      </small>
 
       <div className="z-10 flex flex-col items-center justify-center">
         <Image

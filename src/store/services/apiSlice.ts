@@ -30,8 +30,17 @@ export const apiSlice = createApi({
     }
   }),
   endpoints: (builder) => ({
-    getScores: builder.query<Score[], { page: number; limit: number }>({
-      query: ({ page, limit }) => `scores?page=${page}&limit=${limit}&showDeleted=1`,
+    getScores: builder.query<Score[], { page: number; limit: number; orderBy: string }>({
+      query: ({ page, limit, orderBy }) =>
+        `scores?page=${page}&limit=${limit}&showDeleted=1&orderBy=${orderBy}&order=desc`,
+      transformResponse: (response: ApiResponse<Score[]>) => response.result
+    }),
+    getScoresByIdUser: builder.query<
+      Score[],
+      { page: number; limit: number; id: string; game: string }
+    >({
+      query: ({ page, limit, id, game }) =>
+        `users/scores/${id}?page=${page}&limit=${limit}&game=${game}&orderBy=createdAt&order=desc`,
       transformResponse: (response: ApiResponse<Score[]>) => response.result
     }),
     deleteScore: builder.mutation<void, string>({
@@ -45,6 +54,13 @@ export const apiSlice = createApi({
         url: 'scores',
         method: 'POST',
         body
+      })
+    }),
+    updateScore: builder.mutation<Score, Partial<Score>>({
+      query: ({ id, game, score }) => ({
+        url: `scores/${id}`,
+        method: 'PATCH',
+        body: { game, score }
       })
     }),
     getAllUsers: builder.query<User[], { page: number; limit: number }>({
@@ -66,10 +82,7 @@ export const apiSlice = createApi({
       query: ({ page, limit, game }) => `scores/leaderboard/${game}?page=${page}&limit=${limit}`,
       transformResponse: (response: ApiResponse<Leaderboard[]>) => response.result
     }),
-    getScoresByIdUser: builder.query<Score[], { page: number; limit: number; id: string }>({
-      query: ({ page, limit, id }) => `users/scores/${id}?page=${page}&limit=${limit}`,
-      transformResponse: (response: ApiResponse<Score[]>) => response.result
-    }),
+
     updateProfile: builder.mutation<User, Partial<User>>({
       query: (body: Partial<User>) => ({
         url: `users/profile/${body.id}`,
@@ -96,5 +109,6 @@ export const {
   useGetLeaderboardQuery,
   useUpdateProfileMutation,
   useGetScoresByIdUserQuery,
-  useToggleUserStatusMutation
+  useToggleUserStatusMutation,
+  useUpdateScoreMutation
 } = apiSlice;
