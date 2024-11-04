@@ -1,5 +1,5 @@
 'use client';
-import { Key, useCallback } from "react";
+import { Key, useCallback, useEffect } from "react";
 import { User as UserNextUi, Chip, Tooltip, Switch } from "@nextui-org/react";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "@lib/utils";
@@ -24,12 +24,19 @@ const statusColorMap: { [key: string]: "success" | "default" | "primary" | "seco
 };
 
 export default function UserList() {
-  const { data: users = [], isLoading, refetch } = useGetAllUsersQuery({ limit: 10, page: 1 });
+  const { page, pages, onNextPage, onPreviousPage, setPage, setTotalPagesState } = usePaginator(0);
+  const { data = { users: [], metadata: { totalPages: 0 } }, isLoading, refetch } = useGetAllUsersQuery({ limit: 5, page: page });
+
+  const itemsToShowInTable = data.users;
+
+  useEffect(() => {
+    setTotalPagesState(data?.metadata.totalPages);
+  }, [data, setTotalPagesState]);
+
   // useToggleUserStatusMutation
   const [toggleUserStatus] = useToggleUserStatusMutation();
 
 
-  const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<User>(users, 5);
   // const [users, setUsers] = useState<User[]>([]);
   // const [rowsPerPage, setRowsPerPage] = useState(5);
 

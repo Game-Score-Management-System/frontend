@@ -23,8 +23,16 @@ const columns = [
 
 
 export default function ScoreList() {
-  const { data: scores = [], refetch, isLoading } = useGetScoresQuery({ limit: 20, page: 1, orderBy: 'createdAt' });
-  const { page, pages, itemsToShowInTable, onNextPage, onPreviousPage, setPage } = usePaginator<Score>(scores, 5);
+  const { page, pages, onNextPage, onPreviousPage, setPage, setTotalPagesState } = usePaginator(0);
+  const { data = { scores: [], metadata: { totalPages: 0 } }, refetch, isLoading } = useGetScoresQuery({ limit: 5, page: page, orderBy: 'createdAt' });
+
+  useEffect(() => {
+    setTotalPagesState(data?.metadata.totalPages);
+  }, [data, setTotalPagesState]);
+
+
+  const itemsToShowInTable = data.scores;
+
   const [deleteScore] = useDeleteScoreMutation();
 
   const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
@@ -138,7 +146,7 @@ export default function ScoreList() {
         footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
         header={
           <div className="flex justify-between">
-            <Search />
+            <Search placeholder="Buscar por nombre..." />
             <Button color="default" onClick={() => handleCreateAndUpdate('create')}>
               Nuevo Score
               <PlusIcon width={20} height={20} />

@@ -1,4 +1,5 @@
 import { Leaderboard } from '@/app/ui/models/Leaderboard.model';
+import { Metadata } from '@/app/ui/models/Metadata.model';
 import { Score } from '@models/Score.model';
 import { User } from '@models/User.model';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
@@ -8,13 +9,18 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 interface ApiResponse<T> {
   success: boolean;
   statusCode: number;
-  metadata: {
-    page: number;
-    limit: number;
-    totalItems: number;
-    totalPages: number;
-  };
+  metadata: Metadata;
   result: T;
+}
+
+interface ScoreResponse {
+  scores: Score[];
+  metadata: Metadata;
+}
+
+interface UserResponse {
+  users: User[];
+  metadata: Metadata;
 }
 
 export const apiSlice = createApi({
@@ -30,10 +36,13 @@ export const apiSlice = createApi({
     }
   }),
   endpoints: (builder) => ({
-    getScores: builder.query<Score[], { page: number; limit: number; orderBy: string }>({
+    getScores: builder.query<ScoreResponse, { page: number; limit: number; orderBy: string }>({
       query: ({ page, limit, orderBy }) =>
         `scores?page=${page}&limit=${limit}&showDeleted=1&orderBy=${orderBy}&order=desc`,
-      transformResponse: (response: ApiResponse<Score[]>) => response.result
+      transformResponse: (response: ApiResponse<Score[]>) => ({
+        scores: response.result,
+        metadata: response.metadata
+      })
     }),
     getScoresByIdUser: builder.query<
       Score[],
@@ -63,9 +72,12 @@ export const apiSlice = createApi({
         body: { game, score }
       })
     }),
-    getAllUsers: builder.query<User[], { page: number; limit: number }>({
+    getAllUsers: builder.query<UserResponse, { page: number; limit: number }>({
       query: ({ page, limit }) => `users/admin/?page=${page}&limit=${limit}`,
-      transformResponse: (response: ApiResponse<User[]>) => response.result
+      transformResponse: (response: ApiResponse<User[]>) => ({
+        users: response.result,
+        metadata: response.metadata
+      })
     }),
     updateUser: builder.mutation<User, Partial<User>>({
       query: (body) => ({

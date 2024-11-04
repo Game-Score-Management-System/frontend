@@ -37,10 +37,15 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     // async signIn({ user, account, credentials, email, profile }) {
     //   return true;
     // },
-    async jwt({ token, user }) {
+    async jwt({ token, user, trigger, session }) {
       if (user) {
         token.user = { ...user };
       }
+
+      if (trigger === 'update') {
+        token.user = { ...session.user };
+      }
+
       return token;
     },
     async session({ session, token }: { session: Session; token: JWT }) {

@@ -11,10 +11,13 @@ import supabase from "@/config/supabase";
 import toast from "react-hot-toast";
 import useForm from "@hooks/useForm";
 import { useGetUserProfileQuery, useUpdateProfileMutation } from "@/store/services/apiSlice";
+import { useSession } from "next-auth/react";
 
 export default function EditProfile({ userId }: { userId: string }) {
   const { data: user, isLoading } = useGetUserProfileQuery(userId);
   const [updateProfile, { isLoading: isLoadingUpdate }] = useUpdateProfileMutation();
+  const { data: session, update } = useSession()
+
 
   const onSubmit = async () => {
     console.log("Valido", validForm);
@@ -31,14 +34,13 @@ export default function EditProfile({ userId }: { userId: string }) {
       return acc;
     }, {} as UserEditable);
 
-    try {
-      await updateProfile({ id: user?.id, ...justChangedValues }).unwrap()
-      toast.success('Perfil actualizado correctamente!');
-    } catch (error: any) {
-      if (error?.data.message) {
+    await updateProfile({ id: user?.id, ...justChangedValues }).unwrap()
+      .then(async () => {
+        toast.success('Perfil actualizado correctamente!')
+        await update({ user: { ...session?.user, ...justChangedValues } });
+      }).catch((error) => {
         toast.error(error?.data.message);
-      }
-    }
+      });
   };
 
 
@@ -94,6 +96,7 @@ export default function EditProfile({ userId }: { userId: string }) {
 
     // Actualizar solo la imagen en la base de datos
     await updateProfile({ id: userId, profilePicture: publicUrl }).unwrap();
+    await update({ user: { ...session?.user, profilePicture: publicUrl } });
 
     toast.success('Imagen actualizada correctamente!');
   };

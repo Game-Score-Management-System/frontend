@@ -14,7 +14,8 @@ interface ScoreModalActionsProps {
 
 export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initialData }: ScoreModalActionsProps) {
 
-  const { data: users } = useGetAllUsersQuery({ limit: 10000, page: 1 });
+  const { data } = useGetAllUsersQuery({ limit: 10000, page: 1 });
+  const users = data?.users;
   const [createNewScore, { isLoading }] = useCreateNewScoreMutation();
   const [updateScore, { isLoading: isLoadingUpdate }] = useUpdateScoreMutation();
   const [isUpdate, setIsUpdate] = useState(false);
