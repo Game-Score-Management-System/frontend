@@ -25,6 +25,11 @@ interface UserResponse {
   metadata: Metadata;
 }
 
+interface LeaderboardResponse {
+  leaderboard: Leaderboard[];
+  metadata: Metadata;
+}
+
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({
@@ -102,9 +107,15 @@ export const apiSlice = createApi({
       query: (id) => `users/profile/${id}`,
       transformResponse: (response: ApiResponse<User>) => response.result
     }),
-    getLeaderboard: builder.query<Leaderboard[], { page: number; limit: number; game: string }>({
+    getLeaderboard: builder.query<
+      LeaderboardResponse,
+      { page: number; limit: number; game: string }
+    >({
       query: ({ page, limit, game }) => `scores/leaderboard/${game}?page=${page}&limit=${limit}`,
-      transformResponse: (response: ApiResponse<Leaderboard[]>) => response.result
+      transformResponse: (response: ApiResponse<Leaderboard[]>) => ({
+        leaderboard: response.result,
+        metadata: response.metadata
+      })
     }),
 
     updateProfile: builder.mutation<User, Partial<User>>({

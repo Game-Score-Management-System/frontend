@@ -10,7 +10,7 @@ interface TablePaginatorProps {
 
 export default function TablePaginator({ page, pages, setPage, onNextPage, onPreviousPage }: TablePaginatorProps) {
   return (
-    <div className="py-2 px-2 flex justify-center items-center">
+    <div className="py-2 px-2 flex justify-center items-center gap-10">
       <Pagination
         isCompact
         showControls
