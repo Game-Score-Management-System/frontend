@@ -16,7 +16,9 @@ export default function Logout() {
 
   const handleLogout = async () => {
     dispatch(logout());
-    await cerrarSesion();
+
+    console.log('session?.user.token', session?.user.token);
+    await cerrarSesion(session?.user.token ?? '');
   }
 
   return (

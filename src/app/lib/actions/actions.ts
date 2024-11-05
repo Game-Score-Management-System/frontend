@@ -40,7 +40,9 @@ export async function iniciarSesion(
   }
 }
 
-export async function cerrarSesion() {
+export async function cerrarSesion(backendToken: string) {
+  await postDataApi('auth/logout', { token: backendToken });
+
   await signOut({
     redirectTo: '/login'
   });

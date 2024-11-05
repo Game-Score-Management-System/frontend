@@ -1,3 +1,5 @@
+import { cerrarSesion } from '@/app/lib/actions/actions';
+import { postDataApi } from '@/app/lib/actions/http';
 import { Leaderboard } from '@/app/ui/models/Leaderboard.model';
 import { Metadata } from '@/app/ui/models/Metadata.model';
 import { Score } from '@models/Score.model';
@@ -30,6 +32,16 @@ export const apiSlice = createApi({
     prepareHeaders: async (headers, { getState }) => {
       const state = getState() as { users: { token: string } };
       const token = state.users.token;
+
+      // Validamos si el token esta vigente
+      const { result } = await postDataApi('auth/validate-token', { token });
+
+      console.log('🚀 ~ file: apiSlice.ts ~ line 116 ~ prepareHeaders: ~ result', result);
+      if (result.valid === false) {
+        await cerrarSesion(token);
+        return;
+      }
+
       if (!token) return headers;
       headers.set('authorization', `Bearer ${token}`);
       return headers;
