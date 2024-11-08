@@ -3,7 +3,7 @@ import { postDataApi } from '@/app/lib/actions/http';
 import { Leaderboard } from '@/app/ui/models/Leaderboard.model';
 import { Metadata } from '@/app/ui/models/Metadata.model';
 import { Score } from '@models/Score.model';
-import { User } from '@models/User.model';
+import { Role, User } from '@models/User.model';
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
@@ -96,13 +96,6 @@ export const apiSlice = createApi({
         metadata: response.metadata
       })
     }),
-    updateUser: builder.mutation<User, Partial<User>>({
-      query: (body) => ({
-        url: `users/${body.id}`,
-        method: 'PUT',
-        body
-      })
-    }),
     getUserProfile: builder.query<User, string>({
       query: (id) => `users/profile/${id}`,
       transformResponse: (response: ApiResponse<User>) => response.result
@@ -125,11 +118,11 @@ export const apiSlice = createApi({
         body: { ...body, id: undefined }
       })
     }),
-    toggleUserStatus: builder.mutation<User, { id: string; status: boolean }>({
-      query: ({ id, status }) => ({
+    updateUser: builder.mutation<User, { id: string; status?: boolean; role?: Role }>({
+      query: ({ id, ...body }) => ({
         url: `users/admin/${id}`,
         method: 'PATCH',
-        body: { status }
+        body
       })
     })
   })
@@ -144,6 +137,6 @@ export const {
   useGetLeaderboardQuery,
   useUpdateProfileMutation,
   useGetScoresByIdUserQuery,
-  useToggleUserStatusMutation,
+  useUpdateUserMutation,
   useUpdateScoreMutation
 } = apiSlice;

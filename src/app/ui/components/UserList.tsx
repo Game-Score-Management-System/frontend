@@ -1,14 +1,15 @@
 'use client';
-import { Key, useCallback, useEffect } from "react";
-import { User as UserNextUi, Chip, Tooltip, Switch } from "@nextui-org/react";
+import { Key, useCallback, useEffect, useState } from "react";
+import { User as UserNextUi, Chip, Tooltip, Switch, useDisclosure } from "@nextui-org/react";
 import { PencilIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "@lib/utils";
-import { useGetAllUsersQuery, useToggleUserStatusMutation } from "@store/services/apiSlice";
-import type { User } from "@models/User.model";
+import { useGetAllUsersQuery, useUpdateUserMutation } from "@store/services/apiSlice";
+import { Role, User } from "@models/User.model";
 import AdminTable from "@components/AdminTable";
 import TablePaginator from "@components/TablePaginator";
 import Search from "@components/Search";
 import usePaginator from "@hooks/usePaginator";
+import UserModalActions from "./UserModalActions";
 
 const columns = [
   { name: "Nombre Jugador", uid: "name" },
@@ -29,20 +30,33 @@ export default function UserList() {
 
   const itemsToShowInTable = data.users;
 
+
+  const [updateValuesUser, setUpdateValuesUser] = useState<{ role: Role, userId: string }>({ role: Role.PLAYER, userId: '' });
+  const { isOpen, onOpen, onOpenChange, onClose } = useDisclosure();
+
+  const [updateUser] = useUpdateUserMutation();
+
+  const handleOpen = useCallback((role: Role, userId: string) => {
+    setUpdateValuesUser({ role, userId });
+    onOpen();
+  }, [onOpen]);
+
+  useEffect(() => {
+    if (!isOpen) {
+      refetch();
+    }
+  }, [isOpen, refetch]);
+
+
+
   useEffect(() => {
     setTotalPagesState(data?.metadata.totalPages);
   }, [data, setTotalPagesState]);
 
-  // useToggleUserStatusMutation
-  const [toggleUserStatus] = useToggleUserStatusMutation();
-
-
-  // const [users, setUsers] = useState<User[]>([]);
-  // const [rowsPerPage, setRowsPerPage] = useState(5);
 
   const handleUserStatusChange = useCallback((userId: string, status: boolean) => {
-    toggleUserStatus({ id: userId, status }).unwrap().then(() => refetch());
-  }, [toggleUserStatus, refetch]);
+    updateUser({ id: userId, status }).unwrap().then(() => refetch());
+  }, [updateUser, refetch]);
 
   const renderCell = useCallback((user: User, columnKey: Key) => {
     const { name, lastname, email, role, status, id, createdAt } = user;
@@ -75,7 +89,7 @@ export default function UserList() {
       actions: (
         <div className="relative flex items-center gap-2 justify-center">
           <Tooltip content="Editar usuario">
-            <span className="text-lg text-default-400 cursor-pointer active:opacity-50">
+            <span className="text-lg text-default-400 cursor-pointer active:opacity-50" onClick={() => handleOpen(role, id)}>
               <PencilIcon width={20} height={20} />
             </span>
           </Tooltip>
@@ -89,7 +103,7 @@ export default function UserList() {
     };
 
     return cellRenderers[columnKey.toString()] || null;
-  }, [handleUserStatusChange]);
+  }, [handleUserStatusChange, handleOpen]);
 
 
   // const HeaderContent = useMemo(() => {
@@ -121,13 +135,16 @@ export default function UserList() {
 
 
   return (
-    <AdminTable
-      columns={columns}
-      footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
-      header={<Search placeholder="Buscar por nombre..." />}
-      isLoading={isLoading}
-      items={itemsToShowInTable}
-      renderCell={renderCell}
-    />
+    <>
+      <UserModalActions initialData={updateValuesUser} isOpen={isOpen} onClose={onClose} onOpenChange={onOpenChange} />
+      <AdminTable
+        columns={columns}
+        footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
+        header={<Search placeholder="Buscar por nombre..." />}
+        isLoading={isLoading}
+        items={itemsToShowInTable}
+        renderCell={renderCell}
+      />
+    </>
   );
 }
