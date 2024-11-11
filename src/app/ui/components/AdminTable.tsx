@@ -36,9 +36,9 @@ export default function AdminTable<T>({ header, footer, columns, isLoading, item
         isLoading={isLoading}
         loadingContent={<Spinner label="Cargando..." />}
         emptyContent={
-          <p className="flex justify-center my-3">
+          <div className="flex justify-center my-3">
             <EmptyContent message="No hay elementos disponibles 🤔" />
-          </p>
+          </div>
         }
       >
         {(item) => (
