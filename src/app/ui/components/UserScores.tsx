@@ -3,7 +3,7 @@
 import { useGetScoresByIdUserQuery } from "@/store/services/apiSlice";
 import OwnRankingPositionCard from "./OwnRankingPositionCard";
 import { useAppSelector } from "../hooks/useStore";
-import { Image } from "@nextui-org/react";
+import EmptyContent from "./EmptyContent";
 
 export default function UserScores({ userId }: { userId: string }) {
   const selectedGame = useAppSelector(state => state.game.selectedGame);
@@ -19,15 +19,7 @@ export default function UserScores({ userId }: { userId: string }) {
 
   if (data.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center bg-transparent/40 rounded-full size-80 p-5">
-        <Image
-          src="/alien.png"
-          alt="Imagen no encontro elementos"
-          width={150}
-          height={150}
-        />
-        <p className="text-center text-sn text-slate-100 mb-4">No tienes puntuaciones en este juego</p>
-      </div>
+      <EmptyContent message="No tienes puntuaciones en este juego" />
     )
   }
 

@@ -4,6 +4,7 @@ import { useGetLeaderboardQuery } from "@/store/services/apiSlice";
 import usePaginator from "../hooks/usePaginator";
 import TablePaginator from "./TablePaginator";
 import { useEffect } from "react";
+import EmptyContent from "./EmptyContent";
 
 export default function RankTable({ columnNames }: {
   columnNames: string[],
@@ -25,6 +26,12 @@ export default function RankTable({ columnNames }: {
     )
   }
 
+  if (leaderboard.length === 0) {
+    return (
+      <EmptyContent message="No hay clasificación disponible para este juego 🤔" />
+    )
+  }
+
 
   return (
     <>
@@ -37,7 +44,6 @@ export default function RankTable({ columnNames }: {
           </tr>
         </thead>
         <tbody>
-
           {leaderboard.map((row, index) => {
             const position = index + 1 + ((page - 1) * 10); // Adjust position based on current page
             return (
@@ -53,7 +59,6 @@ export default function RankTable({ columnNames }: {
                     <span className="text-4xl text-sky-100">🥉</span>
                   )}
                   <span className="text-3xl text-sky-100">{position > 3 && position}</span>
-
                 </td>
                 <td className="py-2 pl-4 pr-3 text-base whitespace-nowrap sm:pl-6">
                   <div className="flex items-center gap-4 text-sky-100">
@@ -73,11 +78,9 @@ export default function RankTable({ columnNames }: {
               </tr>
             )
           })}
-
         </tbody>
       </table>
       <TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} ></TablePaginator>
-
     </>
 
   )
