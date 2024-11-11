@@ -10,6 +10,7 @@ import TablePaginator from "@components/TablePaginator";
 import Search from "@components/Search";
 import usePaginator from "@hooks/usePaginator";
 import UserModalActions from "./UserModalActions";
+import { useSearchParams } from "next/navigation";
 
 const columns = [
   { name: "Nombre Jugador", uid: "name" },
@@ -25,8 +26,11 @@ const statusColorMap: { [key: string]: "success" | "default" | "primary" | "seco
 };
 
 export default function UserList() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('query') ?? '';
+
   const { page, pages, onNextPage, onPreviousPage, setPage, setTotalPagesState } = usePaginator(0);
-  const { data = { users: [], metadata: { totalPages: 0 } }, isLoading, refetch } = useGetAllUsersQuery({ limit: 5, page: page });
+  const { data = { users: [], metadata: { totalPages: 0 } }, isLoading, refetch } = useGetAllUsersQuery({ limit: 5, page: page, search: search });
 
   const itemsToShowInTable = data.users;
 
@@ -140,7 +144,7 @@ export default function UserList() {
       <AdminTable
         columns={columns}
         footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
-        header={<Search placeholder="Buscar por nombre..." />}
+        header={<Search placeholder="Buscar por nombre, apellido, usuario o correo" />}
         isLoading={isLoading}
         items={itemsToShowInTable}
         renderCell={renderCell}

@@ -53,9 +53,14 @@ export const apiSlice = createApi({
     }
   }),
   endpoints: (builder) => ({
-    getScores: builder.query<ScoreResponse, { page: number; limit: number; orderBy: string }>({
-      query: ({ page, limit, orderBy }) =>
-        `scores?page=${page}&limit=${limit}&showDeleted=1&orderBy=${orderBy}&order=desc`,
+    getScores: builder.query<
+      ScoreResponse,
+      { page: number; limit: number; orderBy: string; search?: string }
+    >({
+      query: ({ page, limit, orderBy, search }) =>
+        `scores?page=${page}&limit=${limit}&showDeleted=1&orderBy=${orderBy}&order=desc&search=${
+          search ?? ''
+        }`,
       transformResponse: (response: ApiResponse<Score[]>) => ({
         scores: response.result,
         metadata: response.metadata
@@ -89,8 +94,9 @@ export const apiSlice = createApi({
         body: { game, score }
       })
     }),
-    getAllUsers: builder.query<UserResponse, { page: number; limit: number }>({
-      query: ({ page, limit }) => `users/admin/?page=${page}&limit=${limit}`,
+    getAllUsers: builder.query<UserResponse, { page: number; limit: number; search?: string }>({
+      query: ({ page, limit, search }) =>
+        `users/admin/?page=${page}&limit=${limit}&search=${search ?? ''}`,
       transformResponse: (response: ApiResponse<User[]>) => ({
         users: response.result,
         metadata: response.metadata

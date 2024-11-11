@@ -1,9 +1,12 @@
 import { createScoreFormSchema } from "@schemas/createScoreForm.schema";
-import { Modal, ModalContent, ModalHeader, ModalBody, Select, SelectItem, Avatar, Input, ModalFooter, Button } from "@nextui-org/react";
+import { Modal, ModalContent, ModalHeader, ModalBody, Avatar, Input, ModalFooter, Button, Autocomplete, AutocompleteItem } from "@nextui-org/react";
 import { useGetAllUsersQuery, useCreateNewScoreMutation, useUpdateScoreMutation } from "@/store/services/apiSlice";
 import { useState, useEffect } from "react";
 import toast from "react-hot-toast";
 import useForm from "@hooks/useForm";
+import { useInfiniteScroll } from "@nextui-org/use-infinite-scroll";
+import usePaginator from "../hooks/usePaginator";
+import { User } from "../models/User.model";
 
 interface ScoreModalActionsProps {
   isOpen: boolean;
@@ -13,12 +16,38 @@ interface ScoreModalActionsProps {
 }
 
 export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initialData }: ScoreModalActionsProps) {
+  const [isOpenSeletable, setIsOpenSelectable] = useState(false);
+  const { page, onNextPage, setTotalPagesState } = usePaginator(0);
+  const { data = { users: [], metadata: { totalPages: 0 } }, isLoading: isLoading } = useGetAllUsersQuery({ limit: 10, page: page });
+  const users = data.users;
 
-  const { data } = useGetAllUsersQuery({ limit: 10000, page: 1 });
-  const users = data?.users;
-  const [createNewScore, { isLoading }] = useCreateNewScoreMutation();
+  const [infiniteUsers, setInfiniteUsers] = useState<User[]>([]);
+
+
+  const [createNewScore] = useCreateNewScoreMutation();
   const [updateScore, { isLoading: isLoadingUpdate }] = useUpdateScoreMutation();
   const [isUpdate, setIsUpdate] = useState(false);
+
+  useEffect(() => {
+    if (data?.metadata.totalPages !== undefined) {
+      setTotalPagesState(data.metadata.totalPages);
+    }
+  }, [data.metadata.totalPages, setTotalPagesState]);
+
+
+  useEffect(() => {
+    setInfiniteUsers((prev) => [...prev, ...users]);
+  }, [users]);
+
+  const [, scrollerRef] = useInfiniteScroll({
+    hasMore: data.metadata.totalPages > page,
+    isEnabled: isOpenSeletable,
+    shouldUseLoader: false, // We don't want to show the loader at the bottom of the list
+    onLoadMore: () => {
+      onNextPage();
+    }
+  });
+
 
   const handleCreate = async () => {
 
@@ -33,6 +62,8 @@ export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initi
 
       return;
     }
+
+    console.log('values', values);
 
     const newScore = {
       userId: values.userId,
@@ -62,7 +93,6 @@ export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initi
   const { values, errors, handleChange, handleSubmit, setValues } = useForm<CreateScore>({ userId: '', score: 0, game: '' }, createScoreFormSchema, handleCreate);
 
   useEffect(() => {
-    console.log('Initial data', initialData);
 
     if (initialData?.scoreId) {
       setIsUpdate(true);
@@ -99,7 +129,7 @@ export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initi
               <ModalBody>
                 {
                   !isUpdate && (
-                    <Select
+                    <Autocomplete
                       label="Selecciona un usuario"
                       variant="bordered"
                       name="userId"
@@ -107,20 +137,24 @@ export default function ScoreModalActions({ isOpen, onOpenChange, onClose, initi
                       onChange={handleChange}
                       errorMessage={errors.userId}
                       isInvalid={!!errors.userId}
+                      isLoading={isLoading}
+                      scrollRef={scrollerRef}
+                      onOpenChange={setIsOpenSelectable}
+                      onSelectionChange={(key) => setValues((prev) => ({ ...prev, userId: key as string }))}
                     >
                       <>
                         {
-                          users?.map(user => (
-                            <SelectItem
+                          infiniteUsers?.map(user => (
+                            <AutocompleteItem
                               key={user.id}
                               startContent={<Avatar alt={user.username} className="w-6 h-6" src={user.profilePicture} />}
                             >
                               {user.username}
-                            </SelectItem>
+                            </AutocompleteItem>
                           ))
                         }
                       </>
-                    </Select>
+                    </Autocomplete>
                   )
                 }
 

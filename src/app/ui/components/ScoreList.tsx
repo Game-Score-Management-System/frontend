@@ -11,6 +11,7 @@ import TablePaginator from "@components/TablePaginator";
 import usePaginator from "@hooks/usePaginator";
 import { PlusIcon } from "@heroicons/react/24/outline";
 import ScoreModalActions from "./ScoreModalActions";
+import { useSearchParams } from "next/navigation";
 
 const columns = [
   { name: "Nombre Jugador", uid: "name" },
@@ -23,8 +24,11 @@ const columns = [
 
 
 export default function ScoreList() {
+  const searchParams = useSearchParams();
+  const search = searchParams.get('query') ?? '';
+
   const { page, pages, onNextPage, onPreviousPage, setPage, setTotalPagesState } = usePaginator(0);
-  const { data = { scores: [], metadata: { totalPages: 0 } }, refetch, isLoading } = useGetScoresQuery({ limit: 5, page: page, orderBy: 'createdAt' });
+  const { data = { scores: [], metadata: { totalPages: 0 } }, refetch, isLoading } = useGetScoresQuery({ limit: 5, page: page, orderBy: 'createdAt', search });
 
   useEffect(() => {
     setTotalPagesState(data?.metadata.totalPages);
@@ -146,7 +150,7 @@ export default function ScoreList() {
         footer={<TablePaginator onNextPage={onNextPage} onPreviousPage={onPreviousPage} page={page} pages={pages} setPage={setPage} />}
         header={
           <div className="flex justify-between">
-            <Search placeholder="Buscar por nombre..." />
+            <Search placeholder="Buscar por nombre, apellido, usuario o correo" />
             <Button color="default" onClick={() => handleCreateAndUpdate('create')}>
               Nuevo Score
               <PlusIcon width={20} height={20} />
