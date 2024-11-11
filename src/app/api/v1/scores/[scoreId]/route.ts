@@ -7,6 +7,7 @@ type Params = {
 
 export async function GET(request: Request, context: { params: Params }) {
   console.log('🌱🌱🌱🌱', context.params);
+  return NextResponse.json({});
 }
 
 export async function DELETE(request: Request, context: { params: Params }) {
